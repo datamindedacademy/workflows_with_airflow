@@ -1,0 +1,27 @@
+checkoutLocation: "."
+workspaceLocation: "workspace"
+
+tasks:
+  - name: Pull images
+    init: |
+      docker-compose --file ../docker-compose.yml pull
+      gp sync-done pull
+
+  - name: Boot Airflow
+    init: |
+      gp sync-await pull
+    before: |
+      mkdir -p ./mount/dags ./mount/logs ./mount/plugins
+      echo -e "AIRFLOW_UID=$(id -u)" > ../.env
+    command: |
+      docker-compose --file ../docker-compose.yml up
+
+ports:
+  - port: 5555
+    onOpen: ignore
+  - port: 8080
+    onOpen: open-browser
+
+vscode:
+  extensions:
+    - ms-python.python
