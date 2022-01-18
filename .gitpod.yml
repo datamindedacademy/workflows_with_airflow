@@ -10,6 +10,7 @@ tasks:
   - name: Boot Airflow
     init: |
       gp sync-await pull
+      docker-compose --file ../docker-compose.yml up airflow-init
     before: |
       mkdir -p ./mount/dags ./mount/logs ./mount/plugins
       echo -e "AIRFLOW_UID=$(id -u)" > ../.env
