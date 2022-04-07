@@ -12,7 +12,7 @@ You can simply click the button below to start the exercise environment within G
 
 [![Open in Gitpod](
     https://gitpod.io/button/open-in-gitpod.svg
-)](https://gitpod.io/#https://github.com/datamindedbe/academy_airflow)
+)](https://gitpod.io/#https://github.com/oliverw1/dmacademy-apache-airflow)
 
 ### Airflow UI
 
@@ -23,6 +23,7 @@ You can log in to the UI using "airflow" both as username and password.
 ### Mounted folders
 
 The Gitpod environment you receive will contain three folders:
+
 1. exercises
 2. solutions
 3. mount
