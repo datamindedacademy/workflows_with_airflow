@@ -1,14 +1,27 @@
-# README
+# Orchestrating work with Apache Airflow
 
-## Description
+## Repository description
 
-This is the repository for the accompanying exercises 
-to the [Data Minded Academy](https://www.dataminded.academy/) training 
-for [Apache Airflow](https://airflow.apache.org/).
+This code repository contains exercises that go with the [Data Minded
+Academy](https://www.dataminded.academy/) workshop on "Orchestrating work with
+[Apache Airflow](https://airflow.apache.org/)".
+
+## Workshop topic introduction
+
+Data transformation pipelines rarely run by themselves. There are typically
+boundary conditions at play, like "we first need to have the results from this
+API, before we can upload the data to the database". Such workflows can be
+coded as part of your pipeline, but you risk creating an intangible mess that
+won't allow you to continue from halfway if an error occurred only halfway
+through. Learn about Apache Airflow, one of the most popular ways to
+orchestrate work, while allowing for a pleasant dashboard to follow up the
+daily progress of tasks that had to be completed.
+
 
 ## Getting started
 
-You can simply click the button below to start the exercise environment within Gitpod.
+You can simply click the button below to start the exercise environment within
+Gitpod.
 
 [![Open in Gitpod](
     https://gitpod.io/button/open-in-gitpod.svg
@@ -16,9 +29,10 @@ You can simply click the button below to start the exercise environment within G
 
 ### Airflow UI
 
-This environment will set up an Airflow instance for you to use during the exercise session.
-The Airflow UI will load in a new browser window once the startup is complete.
-You can log in to the UI using "airflow" both as username and password.
+The Gitpod environment will set up an Airflow instance for you to use during the
+exercise session. The Airflow UI will load in a new browser window once the
+startup is complete. You can log in to the UI using "airflow" both as username
+and password.
 
 ### Mounted folders
 
