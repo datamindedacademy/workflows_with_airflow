@@ -3,7 +3,7 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.weekday import BranchDayOfWeekOperator
 from airflow.operators.dummy import DummyOperator
 from datetime import timedelta, datetime
-
+import pendulum
 
 with DAG(
     dag_id="tutorial",
@@ -19,7 +19,7 @@ with DAG(
     },
     description="Generate semi-weekly sales report",
     schedule_interval="@daily",
-    start_date=datetime(2021, 1, 1),
+    start_date=pendulum.datetime(2021, 1, 1, tz="Europe/Brussels"),
     catchup=False,
     tags=["reporting"],
 ) as dag:
