@@ -4,11 +4,15 @@ workspaceLocation: "workspace"
 tasks:
   - name: Pull images
     init: |
+      docker build . --tag academy-airflow:2.2.3
+      echo -e "AIRFLOW_IMAGE_NAME=academy-airflow:2.2.3" >> ../.env
       docker-compose --file ../docker-compose.yml pull
       gp sync-done pull
 
   - name: Boot Airflow
     init: |
+      docker build . --tag academy-airflow:2.2.3
+      echo -e "AIRFLOW_IMAGE_NAME=academy-airflow:2.2.3" >> ../.env
       gp sync-await pull
       docker-compose --file ../docker-compose.yml up airflow-init
     before: |
