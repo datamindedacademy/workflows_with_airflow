@@ -39,7 +39,9 @@ with processing_dag:
 
 with reporting_dag:
     sensor = ExternalTaskSensor(
-        task_id="processing_done", external_dag_id="processing_pipeline", external_task_id="done"
+        task_id="processing_done",
+        external_dag_id="processing_pipeline",
+        external_task_id="done",
     )
 
     report = DummyOperator(task_id="generate_report")

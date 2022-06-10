@@ -29,9 +29,7 @@ dag = DAG(
 
 def create_task(idx):
     return BashOperator(
-        task_id=f"task_{idx}",
-        dag=dag,
-        bash_command=f"echo 'task_{idx} done'"
+        task_id=f"task_{idx}", dag=dag, bash_command=f"echo 'task_{idx} done'"
     )
 
 
@@ -39,7 +37,7 @@ def failing_task(idx):
     return BashOperator(
         task_id=f"task_{idx}",
         dag=dag,
-        bash_command=f"echo 'task_{idx} failed'; exit -1"
+        bash_command=f"echo 'task_{idx} failed'; exit -1",
     )
 
 
@@ -52,4 +50,3 @@ if use_dummy:
     left >> DummyOperator(task_id="join", dag=dag) >> right
 else:
     cross_downstream(from_tasks=left, to_tasks=right)
-

@@ -28,8 +28,12 @@ def load_data():
 
     investment_link = "https://eforexcel.com/wp/wp-content/uploads/2021/09/2000000-HRA-Records.zip"
 
-    headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:66.0) Gecko/20100101 Firefox/66.0"}
-    response = requests.get(investment_link, stream=True, verify=False, headers=headers)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:66.0) Gecko/20100101 Firefox/66.0"
+    }
+    response = requests.get(
+        investment_link, stream=True, verify=False, headers=headers
+    )
     with ZipFile(BytesIO(response.content)) as myzip:
         with myzip.open(myzip.namelist()[0]) as myfile:
             df = pd.read_csv(myfile)

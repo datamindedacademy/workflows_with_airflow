@@ -30,9 +30,7 @@ def today_is_saturday():
 
 def create_task(name):
     return BashOperator(
-        task_id=name,
-        dag=dag,
-        bash_command=f"echo '{name} done'"
+        task_id=name, dag=dag, bash_command=f"echo '{name} done'"
     )
 
 

@@ -33,5 +33,5 @@ birthday_greeting = BashOperator(
     bash_command=(
         f"echo 'happy birthday {MY_NAME}! "
         f"You are {years_today()} years old today!'"
-    )
+    ),
 )

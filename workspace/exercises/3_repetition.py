@@ -20,51 +20,35 @@ dag = DAG(
 )
 
 task_a = BashOperator(
-    task_id="task_a",
-    dag=dag,
-    bash_command="echo 'task_a done'"
+    task_id="task_a", dag=dag, bash_command="echo 'task_a done'"
 )
 
 task_b = BashOperator(
-    task_id="task_b",
-    dag=dag,
-    bash_command="echo 'task_b done'"
+    task_id="task_b", dag=dag, bash_command="echo 'task_b done'"
 )
 
 task_c = BashOperator(
-    task_id="task_c",
-    dag=dag,
-    bash_command="echo 'task_c done'"
+    task_id="task_c", dag=dag, bash_command="echo 'task_c done'"
 )
 
 task_d = BashOperator(
-    task_id="task_d",
-    dag=dag,
-    bash_command="echo 'task_d done'"
+    task_id="task_d", dag=dag, bash_command="echo 'task_d done'"
 )
 
 task_e = BashOperator(
-    task_id="task_e",
-    dag=dag,
-    bash_command="echo 'task_e done'"
+    task_id="task_e", dag=dag, bash_command="echo 'task_e done'"
 )
 
 task_f = BashOperator(
-    task_id="task_f",
-    dag=dag,
-    bash_command="echo 'task_f done'"
+    task_id="task_f", dag=dag, bash_command="echo 'task_f done'"
 )
 
 task_g = BashOperator(
-    task_id="task_g",
-    dag=dag,
-    bash_command="echo 'task_g done'"
+    task_id="task_g", dag=dag, bash_command="echo 'task_g done'"
 )
 
 task_h = BashOperator(
-    task_id="task_h",
-    dag=dag,
-    bash_command="echo 'task_h done'"
+    task_id="task_h", dag=dag, bash_command="echo 'task_h done'"
 )
 
 task_a >> task_e
