@@ -14,7 +14,8 @@ tasks:
     before: |
       mkdir -p ./mount/dags ./mount/logs ./mount/plugins
       echo -e "AIRFLOW_UID=$(id -u)" >> ../.env
-      echo -e "AIRFLOW_IMAGE_NAME=apache/airflow:2.2.3-python3.8" >> ../.env
+      docker build . --tag academy-airflow:2.2.3
+      echo -e "AIRFLOW_IMAGE_NAME=academy-airflow:2.2.3" >> ../.env
       # Make sure to add these to your gitpod variables: https://gitpod.io/variables
       # Their value can be obtained from the "terraform apply" outputs.
       echo -e "AWS_ACCESS_KEY_ID=${AIRFLOW_IAM_ACCESS_KEY}" >> ../.env
