@@ -6,8 +6,6 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 
 
-
-
 with DAG(
     dag_id="xcoms",
     # These args will get passed on to each operator
@@ -55,7 +53,7 @@ with DAG(
             print("Pulled two XCom values")
         else:
             raise ValueError()
-        return {1, 3}
+        return (1, 3)  # Parenthesis added for clarity
 
     puller = PythonOperator(
         task_id="pull",
