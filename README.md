@@ -45,3 +45,11 @@ The Gitpod environment you receive will contain three folders:
 The folder named *mount* will contain three sub-folders: dags, logs and plugins.
 These three folders will reflect the internal state of Airflow for these points,
 and can be used to upload DAGs or plugins into Airflow, or download log files.
+
+### Debugging
+
+When you need access to the containerized Airflow environment, use 
+
+```shell
+docker-compose run airflow-cli bash
+```
