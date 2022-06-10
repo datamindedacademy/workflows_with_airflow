@@ -27,7 +27,6 @@ with dag:
     start, middle, end = (
         DummyOperator(task_id=s) for s in ("start", "middle", "end")
     )
-
     with TaskGroup(group_id="group1") as group1:
         ts1 = [DummyOperator(task_id=f"section-1-task-{n}") for n in indices]
     with TaskGroup(group_id="group2") as group2:
