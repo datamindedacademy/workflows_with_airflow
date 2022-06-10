@@ -59,7 +59,7 @@ x-airflow-common:
     AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: '30'  # Set shorter interval to reduce student waiting time
     AIRFLOW__SECRETS__BACKEND: airflow.contrib.secrets.aws_secrets_manager.SecretsManagerBackend
     AIRFLOW__SECRETS__BACKEND_KWARGS: '{"connections_prefix": "airflow/connections", "variables_prefix": "airflow/variables"}'
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- apache-airflow-providers-amazon[cncf.kubernetes]==3.4.0}
   volumes:
     - ./workspace/mount/dags:/opt/airflow/dags
     - ./workspace/mount/logs:/opt/airflow/logs
