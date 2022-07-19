@@ -42,6 +42,9 @@ with DAG(
 
     # Make report if branch executes on Monday or on Wednesday.
     branch >> [make_report, empty_task]
+    make_report >> DummyOperator("foo", trigger_rule="all_done", depends_on_past=True)
 
 # We can simplify this a lot: rather than scheduling it daily, we can adapt the
-# schedule_interval to use a CRON syntax.
+# schedule_interval to use CRON syntax. Though keep in mind that it will then
+# run with different data intervals, so if you depend on those parameters (e.g.
+# in templates) then you cannot simply change to this alternative.
