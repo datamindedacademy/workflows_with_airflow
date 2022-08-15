@@ -1,8 +1,8 @@
+from datetime import timedelta
+
+import pendulum
 from airflow import DAG
 from airflow.operators.dummy import DummyOperator
-from datetime import timedelta
-import pendulum
-
 
 dag = DAG(
     dag_id="task_group_required",

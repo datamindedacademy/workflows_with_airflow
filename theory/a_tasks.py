@@ -1,9 +1,10 @@
+from datetime import timedelta
+
+import pendulum
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.weekday import BranchDayOfWeekOperator
 from airflow.operators.dummy import DummyOperator
-from datetime import timedelta, datetime
-import pendulum
+from airflow.operators.weekday import BranchDayOfWeekOperator
 
 with DAG(
     dag_id="tutorial",
@@ -36,13 +37,17 @@ with DAG(
     make_report = BashOperator(
         task_id="branch_true",
         # The trailing space is required to prevent Jinja templating
-        bash_command="/usr/bin/reportgen.sh "
+        bash_command="/usr/bin/reportgen.sh ",
     )
     empty_task = DummyOperator(task_id="branch_false")
 
     # Make report if branch executes on Monday or on Wednesday.
     branch >> [make_report, empty_task]
-    make_report >> DummyOperator("foo", trigger_rule="all_done", depends_on_past=True)
+    make_report >> DummyOperator(
+        "foo",
+        trigger_rule="all_done",
+        depends_on_past=True,
+    )
 
 # We can simplify this a lot: rather than scheduling it daily, we can adapt the
 # schedule_interval to use CRON syntax. Though keep in mind that it will then

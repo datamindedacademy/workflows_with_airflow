@@ -13,7 +13,7 @@ MY_NAME = ...
 MY_BIRTHDAY = dt.datetime(...)
 
 dag = DAG(
-    dag_id="happy_birthday",
+    dag_id="happy_birthday_v1",
     description="Wishes you a happy birthday",
     default_args={"owner": "Airflow"},
     schedule_interval="@yearly",
@@ -23,5 +23,5 @@ dag = DAG(
 birthday_greeting = BashOperator(
     task_id="send_wishes",
     dag=dag,
-    bash_command=f"echo 'happy birthday {MY_NAME}!'",
+    bash_command=f"echo 'Happy birthday {MY_NAME}!'",
 )

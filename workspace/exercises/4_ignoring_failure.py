@@ -1,10 +1,9 @@
 import datetime as dt
 
 from airflow import DAG
+from airflow.models.baseoperator import cross_downstream
 from airflow.operators.bash import BashOperator
 from airflow.operators.dummy import DummyOperator
-from airflow.models.baseoperator import cross_downstream
-
 
 """
 Exercise 4
@@ -29,7 +28,9 @@ dag = DAG(
 
 def create_task(idx):
     return BashOperator(
-        task_id=f"task_{idx}", dag=dag, bash_command=f"echo 'task_{idx} done'"
+        task_id=f"task_{idx}",
+        dag=dag,
+        bash_command=f"echo 'task_{idx} done'",
     )
 
 
@@ -41,9 +42,9 @@ def failing_task(idx):
     )
 
 
-left = [create_task(x) for x in ("a", "b", "c")]
+left = [create_task(x) for x in "abc"]
 left.append(failing_task("d"))
-right = [create_task(x) for x in ("e", "f", "g", "h")]
+right = [create_task(x) for x in "efgh"]
 
 use_dummy = True
 if use_dummy:

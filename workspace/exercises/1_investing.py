@@ -22,9 +22,10 @@ dag = DAG(
 
 
 def load_data():
-    import requests
     from io import BytesIO
     from zipfile import ZipFile
+
+    import requests
 
     investment_link = "https://eforexcel.com/wp/wp-content/uploads/2021/09/2000000-HRA-Records.zip"
 
