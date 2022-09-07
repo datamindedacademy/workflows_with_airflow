@@ -1,5 +1,9 @@
 variable "keybase_user" {
-    description = "Enter the keybase id of a person to encrypt the secret_key (to decrypt: terraform output -raw secret_key | base64 --decode | keybase pgp decrypt)"
+  description = <<-EOM
+    Enter the keybase id of a person to encrypt the AWS IAM secret access key.
+    Note that you need access to its private key so you can decrypt it. In
+    practice that means you specify your own keybase account id.
+    EOM
 }
 
 resource "aws_iam_user" "airflow" {
