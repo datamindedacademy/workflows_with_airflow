@@ -3,11 +3,15 @@ workspaceLocation: "workspace"
 
 tasks:
   - name: Pull images
+    env:
+      AIRFLOW_IMAGE_NAME: dmacademy/airflow:2.3.4
     init: |
       docker-compose --file ../docker-compose.yml pull
       gp sync-done pull
 
   - name: Boot Airflow
+    env:
+      AIRFLOW_IMAGE_NAME: dmacademy/airflow:2.3.4
     init: |
       gp sync-await pull
       docker-compose --file ../docker-compose.yml up airflow-init

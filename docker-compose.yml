@@ -44,8 +44,8 @@ x-airflow-common:
   # In order to add custom dependencies or upgrade provider packages you can use your extended image.
   # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
   # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
+  build: .
   image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.3.4}
-  # build: .
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
@@ -184,12 +184,13 @@ services:
           printf "%04d%04d%04d%04d" $${1//./ }
         }
         airflow_version=$$(AIRFLOW__LOGGING__LOGGING_LEVEL=INFO && gosu airflow airflow version)
+        echo "-${airflow_version}-"
         airflow_version_comparable=$$(ver $${airflow_version})
         min_airflow_version=2.2.0
         min_airflow_version_comparable=$$(ver $${min_airflow_version})
         if (( airflow_version_comparable < min_airflow_version_comparable )); then
           echo
-          echo -e "\033[1;31mERROR!!!: Too old Airflow version $${airflow_version}!\e[0m"
+          echo -e "\033[1;31mERROR!!!: Too old Airflow version -$${airflow_version}-!\e[0m"
           echo "The minimum Airflow version supported: $${min_airflow_version}. Only use this or higher!"
           echo
           exit 1
