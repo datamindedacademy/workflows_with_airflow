@@ -1,6 +1,6 @@
-apache-airflow==2.2.5
+apache-airflow==2.3.4
 # The amazon provider can be found in the Docker base image. Alternatively, run
 # docker exec -i ANY_AIRFLOW_CONTAINER pip list | grep amazon
 # against any of the Airflow containers.
-apache-airflow-providers-amazon[cncf.kubernetes]==2.4.0
+apache-airflow-providers-amazon[cncf.kubernetes]==5.1.0
 
