@@ -23,5 +23,5 @@ dag = DAG(
 birthday_greeting = BashOperator(
     task_id="send_wishes",
     dag=dag,
-    bash_command=f"echo 'Happy birthday {MY_NAME}!'",
+    bash_command=f"echo 'Happy birthday, {MY_NAME}!'",
 )

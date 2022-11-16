@@ -25,26 +25,26 @@ with DAG(
     tags=["reporting"],
 ) as dag:
 
-    branch = BranchDayOfWeekOperator(
-        task_id="make_choice",
-        follow_task_ids_if_true="branch_true",
-        follow_task_ids_if_false="branch_false",
-        week_day={"Monday", "Wednesday"},
-        use_task_execution_day=True,
-    )
-
-    # Note the command. What does that imply for the worker?
+    # Note the bash command. What does that imply for the worker?
     make_report = BashOperator(
         task_id="branch_true",
         # The trailing space is required to prevent Jinja templating
+        # See https://airflow.apache.org/docs/apache-airflow/stable/howto/operator/bash.html#jinja-template-not-found
         bash_command="/usr/bin/reportgen.sh ",
     )
     empty_task = DummyOperator(task_id="branch_false")
 
+    branch = BranchDayOfWeekOperator(
+        task_id="make_choice",
+        follow_task_ids_if_true=make_report.task_id,
+        follow_task_ids_if_false=empty_task.task_id,
+        week_day={"Monday", "Wednesday"},
+        use_task_execution_day=True,
+    )
     # Make report if branch executes on Monday or on Wednesday.
     branch >> [make_report, empty_task]
     make_report >> DummyOperator(
-        "foo",
+        task_id="foo",
         trigger_rule="all_done",
         depends_on_past=True,
     )

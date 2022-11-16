@@ -1,7 +1,6 @@
-import datetime as dt
-
 from airflow import DAG
 from airflow.operators.bash import BashOperator
+from pendulum import datetime
 
 """
 Exercise 2.5
@@ -11,7 +10,7 @@ Extend your previous result to also print your age.
 
 
 MY_NAME = "Barack Obama"
-MY_BIRTHDAY = dt.datetime(year=1961, month=8, day=4)
+MY_BIRTHDAY = datetime(year=1961, month=8, day=4, tz="Pacific/Honolulu")
 
 dag = DAG(
     dag_id="happy_birthday_v2",
@@ -31,7 +30,7 @@ birthday_greeting = BashOperator(
     task_id="send_wishes",
     dag=dag,
     bash_command=(
-        f"echo 'Happy birthday {MY_NAME}! "
+        f"echo 'Happy birthday, {MY_NAME}! "
         f"You are {years_today()} years old today!'"
     ),
 )
