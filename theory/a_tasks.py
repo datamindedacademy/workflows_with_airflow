@@ -1,9 +1,8 @@
 from datetime import timedelta
-
 import pendulum
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.dummy import DummyOperator
+from airflow.operators.empty import EmptyOperator
 from airflow.operators.weekday import BranchDayOfWeekOperator
 
 with DAG(
@@ -21,18 +20,23 @@ with DAG(
     description="Generate semi-weekly sales report",
     schedule_interval="@daily",
     start_date=pendulum.datetime(2021, 1, 1, tz="Europe/Brussels"),
-    catchup=False,
+    end_date=pendulum.datetime(2021, 1, 10, tz="Europe/Brussels"),
+    catchup=True,
     tags=["reporting"],
 ) as dag:
-
-    # Note the bash command. What does that imply for the worker?
+    # Note the bash command. What does that imply for the worker? If you don't
+    # immediately see it, consider what would happen if you'd call the less
+    # prevalent tool 'jq'.
     make_report = BashOperator(
-        task_id="branch_true",
+        task_id="create_report",
         # The trailing space is required to prevent Jinja templating
         # See https://airflow.apache.org/docs/apache-airflow/stable/howto/operator/bash.html#jinja-template-not-found
-        bash_command="/usr/bin/reportgen.sh ",
+        bash_command='echo "home is $HOME" ',
     )
-    empty_task = DummyOperator(task_id="branch_false")
+    empty_task = EmptyOperator(
+        task_id="send_most_recent_report",
+        trigger_rule="all_done"
+    )
 
     branch = BranchDayOfWeekOperator(
         task_id="make_choice",
@@ -43,13 +47,15 @@ with DAG(
     )
     # Make report if branch executes on Monday or on Wednesday.
     branch >> [make_report, empty_task]
-    make_report >> DummyOperator(
+    make_report >> [EmptyOperator(
         task_id="foo",
         trigger_rule="all_done",
         depends_on_past=True,
-    )
+    ), empty_task]
 
+    empty_task >> [EmptyOperator(task_id="signal_done")]
 # We can simplify this a lot: rather than scheduling it daily, we can adapt the
 # schedule_interval to use CRON syntax. Though keep in mind that it will then
 # run with different data intervals, so if you depend on those parameters (e.g.
 # in templates) then you cannot simply change to this alternative.
+
