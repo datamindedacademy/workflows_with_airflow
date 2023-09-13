@@ -2,8 +2,8 @@ import pendulum
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
-def hello_world(ds=None):
-    print("That's right, I'm a Python function!")
+def say_hello(ds=None):
+    print("Hello, I'm a Python function!")
     return "This goes to the logs..."
 
 with DAG(
@@ -13,5 +13,5 @@ with DAG(
 ) as dag:
     task = PythonOperator(
         task_id="hello_world",
-        python_callable=hello_world
+        python_callable=say_hello
     )
