@@ -1,20 +1,20 @@
+"""
+# Exercise 4
+
+Some operators, like the BranchPythonOperator,
+allow you to skip tasks. Often, you will want to
+do something after this branch, regardless of
+whether or not the step has been skipped. To do
+so, the task that depends on the skipped task
+and the non-skipped task will need to wait for
+one of them to be successfully finished.
+"""
 import datetime as dt
+import random
 
 from airflow import DAG
-from airflow.models.baseoperator import cross_downstream
-from airflow.operators.bash import BashOperator
 from airflow.operators.dummy import DummyOperator
-
-"""
-Exercise 4
-
-Can you modify this DAG in such a way that downstream tasks (e, f, g, h)
-will still start, even when the upstream task 'd' failed?
-
-BONUS: Can you make it so that downstream tasks will only run 
-if at least one upstream task has succeeded,
-but not if all upstream tasks failed?
-"""
+from airflow.operators.python import BranchPythonOperator
 
 dag = DAG(
     dag_id="parallel_tasks",
@@ -25,29 +25,24 @@ dag = DAG(
     end_date=dt.datetime(2021, 1, 15),
 )
 
+dummies = [DummyOperator(task_id=f"task{n}", dag=dag) for n in range(7)]
 
-def create_task(idx):
-    return BashOperator(
-        task_id=f"task_{idx}",
-        dag=dag,
-        bash_command=f"echo 'task_{idx} done'",
-    )
+def split():
+    index = 1 + int(random.random() > .5)
+    return dummies[index].task_id
+
+branch = BranchPythonOperator(
+    task_id="branch_at_random",
+    dag=dag,
+    python_callable=split,
+)
+
+dummies[0] >> branch >> [dummies[1], dummies[2]]
+
+dummies[1] >> dummies[3]
+dummies[2] >> dummies[4]
+
+# Dummies[5] recombines the 2 branches. However, we don't want it skipped.
+[dummies[3], dummies[4]] >> dummies[5] >> dummies[6]
 
 
-def failing_task(idx):
-    return BashOperator(
-        task_id=f"task_{idx}",
-        dag=dag,
-        bash_command=f"echo 'task_{idx} failed'; exit -1",
-    )
-
-
-left = [create_task(x) for x in "abc"]
-left.append(failing_task("d"))
-right = [create_task(x) for x in "efgh"]
-
-use_dummy = True
-if use_dummy:
-    left >> DummyOperator(task_id="join", dag=dag) >> right
-else:
-    cross_downstream(from_tasks=left, to_tasks=right)
