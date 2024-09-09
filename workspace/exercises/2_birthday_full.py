@@ -18,6 +18,7 @@ dag = DAG(
     default_args={"owner": "Airflow"},
     schedule_interval="0 0 4 8 *",
     start_date=MY_BIRTHDAY,
+    catchup=False,
 )
 
 

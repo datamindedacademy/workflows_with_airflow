@@ -25,7 +25,7 @@ Gitpod.
 
 [![Open in Gitpod](
     https://gitpod.io/button/open-in-gitpod.svg
-)](https://gitpod.io/#https://github.com/datamindedacademy/workflows_with_airflow)
+)](https://gitpod.io/#https://github.com/datamindedacademy/workflows_with_airflow/tree/feature/some_updates)
 
 ### Airflow UI
 

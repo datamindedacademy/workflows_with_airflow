@@ -18,8 +18,8 @@ dag = DAG(
     description="On saturdays we run aggregations",
     default_args={"owner": "Airflow"},
     schedule_interval="@daily",
-    start_date=dt.datetime(2021, 1, 1),
-    end_date=dt.datetime(2021, 1, 15),
+    start_date=dt.datetime(2024, 9, 1),
+    end_date=dt.datetime(2024, 9, 15),
 )
 
 
