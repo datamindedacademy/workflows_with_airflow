@@ -63,7 +63,7 @@ x-airflow-common:
     AIRFLOW__SCHEDULER_MIN_FILE_PROCESS_INTERVAL: '10'  # Re-scan known dags every 10s
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
-    AIRFLOW__WEBSERVER__NAVBAR_COLOR: '#5d46e7'
+    AIRFLOW__WEBSERVER__NAVBAR_COLOR: '#b8aefa'
     # yamllint disable rule:line-length
     # Use simple http server on scheduler for health checks
     # See https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/check-health.html#scheduler-health-check-server
