@@ -21,8 +21,8 @@ dag = DAG(
     description="Many tasks in parallel",
     default_args={"owner": "Airflow"},
     schedule_interval="@daily",
-    start_date=dt.datetime(2021, 9, 1),
-    end_date=dt.datetime(2021, 9, 15),
+    start_date=dt.datetime(2024, 9, 1),
+    end_date=dt.datetime(2024, 9, 15),
 )
 
 dummies = [DummyOperator(task_id=f"task{n}", dag=dag) for n in range(7)]
