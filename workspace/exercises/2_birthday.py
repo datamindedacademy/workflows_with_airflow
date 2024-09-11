@@ -18,6 +18,7 @@ dag = DAG(
     default_args={"owner": "Airflow"},
     schedule_interval="@yearly",
     start_date=...,
+    catchup=False
 )
 
 birthday_greeting = BashOperator(

@@ -4,28 +4,22 @@ workspaceLocation: "workspace"
 tasks:
   - name: Pull images
     env:
-      AIRFLOW_IMAGE_NAME: dmacademy/airflow:2.3.4
+      AIRFLOW_IMAGE_NAME: dmacademy/airflow:2.10.1
     init: |
-      docker-compose --file ../docker-compose.yml pull
+      docker-compose --file ../docker-compose.yaml pull
       gp sync-done pull
 
   - name: Boot Airflow
     env:
-      AIRFLOW_IMAGE_NAME: dmacademy/airflow:2.3.4
+      AIRFLOW_IMAGE_NAME: dmacademy/airflow:2.10.1
     init: |
       gp sync-await pull
-      docker-compose --file ../docker-compose.yml up airflow-init
+      docker-compose --file ../docker-compose.yaml up airflow-init
     before: |
       mkdir -p ./mount/dags ./mount/logs ./mount/plugins
       echo -e "AIRFLOW_UID=$(id -u)" >> ../.env
-      #      docker build . --tag academy-airflow:2.2.3
-      #      echo -e "AIRFLOW_IMAGE_NAME=academy-airflow:2.2.3" >> ../.env
-      # Make sure to add these to your gitpod variables: https://gitpod.io/variables
-      # Their value can be obtained from the "terraform apply" outputs.
-      echo -e "AWS_ACCESS_KEY_ID=${AIRFLOW_IAM_ACCESS_KEY}" >> ../.env
-      echo -e "AWS_SECRET_ACCESS_KEY=${AIRFLOW_IAM_SECRET_ACCESS_KEY}" >> ../.env
     command: |
-      docker-compose --file ../docker-compose.yml up
+      docker-compose --file ../docker-compose.yaml up
 
 ports:
   - port: 5555

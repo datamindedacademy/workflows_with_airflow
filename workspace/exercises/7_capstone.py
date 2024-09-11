@@ -29,7 +29,7 @@ BUCKET_KEY = "..."
 
 dag = DAG(
     dag_id="sensor-example",
-    start_date=pendulum.datetime(2022, 1, 1, tz="Europe/Brussels"),
+    start_date=pendulum.datetime(2024, 9, 1, tz="Europe/Brussels"),
     schedule_interval="...",
     catchup=False,
 )

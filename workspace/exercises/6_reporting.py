@@ -19,8 +19,8 @@ processing_dag = DAG(
     description="Processes and stores data",
     default_args={"owner": "Processing Team"},
     schedule_interval="@daily",
-    start_date=dt.datetime(2021, 1, 1),
-    end_date=dt.datetime(2021, 1, 15),
+    start_date=dt.datetime(2024, 9, 1),
+    end_date=dt.datetime(2024, 9, 15),
 )
 
 reporting_dag = DAG(
@@ -28,8 +28,8 @@ reporting_dag = DAG(
     description="Generates and sends reports",
     default_args={"owner": "Reporting Team"},
     schedule_interval="0 6 * * *",
-    start_date=dt.datetime(2021, 1, 1),
-    end_date=dt.datetime(2021, 1, 15),
+    start_date=dt.datetime(2024, 9, 1),
+    end_date=dt.datetime(2024, 9, 15),
 )
 
 with processing_dag:
