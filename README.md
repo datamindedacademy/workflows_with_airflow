@@ -21,22 +21,21 @@ daily progress of tasks that had to be completed.
 ## Getting started
 
 You can simply click the button below to start the exercise environment within
-Gitpod.
+GitHub Codespaces.
 
-[![Open in Gitpod](
-    https://gitpod.io/button/open-in-gitpod.svg
-)](https://gitpod.io/#https://github.com/datamindedacademy/workflows_with_airflow)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/datamindedacademy/workflows_with_airflow)
+
 
 ### Airflow UI
 
-The Gitpod environment will set up an Airflow instance for you to use during the
+The GitHub Codespaces environment will set up an Airflow instance for you to use during the
 exercise session. The Airflow UI will load in a new browser window once the
 startup is complete. You can log in to the UI using "airflow" both as username
 and password.
 
 ### Mounted folders
 
-The Gitpod environment you receive will contain three folders:
+The GitHub Codespace environment you receive will contain three folders:
 
 1. exercises
 2. solutions
