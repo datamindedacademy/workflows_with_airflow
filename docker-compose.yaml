@@ -1,3 +1,4 @@
+version: '3.7'
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -52,9 +53,9 @@ x-airflow-common: &airflow-common
   # build: .
   environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
-    AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@localhost/airflow
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@localhost/airflow
+    AIRFLOW__CELERY__BROKER_URL: redis://:@localhost:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: '10' # Set shorter interval to reduce student waiting time
@@ -92,7 +93,7 @@ services:
     command: sleep infinity
     volumes:
       - ./workspace:/workspace:cached
-    network_mode: service:airflow-webserver
+    network_mode: host 
   postgres:
     image: postgres:13
     environment:
@@ -107,6 +108,7 @@ services:
       retries: 5
       start_period: 5s
     restart: always
+    network_mode: host 
 
   redis:
     # Redis is limited to 7.2-bookworm due to licencing change
@@ -121,6 +123,7 @@ services:
       retries: 50
       start_period: 30s
     restart: always
+    network_mode: host 
 
   airflow-webserver:
     <<: *airflow-common
@@ -134,6 +137,7 @@ services:
       retries: 5
       start_period: 30s
     restart: always
+    network_mode: host
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
@@ -149,6 +153,7 @@ services:
       retries: 5
       start_period: 10s
     restart: always
+    network_mode: host
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
@@ -172,6 +177,7 @@ services:
       # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
       DUMB_INIT_SETSID: '0'
     restart: always
+    network_mode: host
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
@@ -191,6 +197,7 @@ services:
       retries: 5
       start_period: 30s
     restart: always
+    network_mode: host
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
@@ -259,6 +266,7 @@ services:
     user: '0:0'
     volumes:
       - .:/sources
+    network_mode: host
 
   airflow-cli:
     <<: *airflow-common
