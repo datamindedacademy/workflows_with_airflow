@@ -13,7 +13,7 @@ import datetime as dt
 import random
 
 from airflow import DAG
-from airflow.operators.dummy import DummyOperator
+from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator
 
 dag = DAG(
@@ -25,7 +25,7 @@ dag = DAG(
     end_date=dt.datetime(2024, 9, 15),
 )
 
-dummies = [DummyOperator(task_id=f"task{n}", dag=dag) for n in range(7)]
+dummies = [EmptyOperator(task_id=f"task{n}", dag=dag) for n in range(7)]
 
 def split():
     index = 1 + int(random.random() > .5)

@@ -6,7 +6,10 @@
   "workspaceFolder": "/workspace",
   "customizations": {
     "vscode": {
-      "extensions": ["ms-python.python", "charliermarsh.ruff"]
+      "extensions": ["ms-python.python", "charliermarsh.ruff"],
+         "settings": {
+                "python.defaultInterpreterPath": "/app/.venv/bin/python"
+            }
     }
   },
   "forwardPorts": [8080]
