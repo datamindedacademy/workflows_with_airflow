@@ -1,10 +1,16 @@
 {
-  "build": { "dockerfile": "Dockerfile" },
-
+  "dockerComposeFile": [
+    "../docker-compose.yaml",
+    "docker-compose.workspace.yaml"],
+  "service": "workspace",
+  "workspaceFolder": "/workspace",
   "customizations": {
     "vscode": {
       "extensions": ["ms-python.python", "charliermarsh.ruff"]
     }
   },
+  // Devcontainers don't allow forwarding of ports on non-local networks, so we need to use socat to forward the port from the ariflow-webserver service
+  // See https://github.com/orgs/community/discussions/9420
+  "postStartCommand": "nohup bash -c 'socat TCP4-LISTEN:8080,reuseaddr,fork TCP:airflow-webserver:8080 &' >/dev/null 2>&1", 
   "forwardPorts": [8080]
 }

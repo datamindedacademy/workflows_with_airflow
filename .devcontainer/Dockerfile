@@ -1,3 +1,3 @@
-FROM apache/airflow:2.10.1
+FROM mcr.microsoft.com/devcontainers/python:3.11-bullseye
 
-USER airflow
+RUN apt-get update && apt-get install -y socat
