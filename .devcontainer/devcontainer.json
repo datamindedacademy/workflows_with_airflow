@@ -1,0 +1,27 @@
+// The Dev Container format allows you to configure your environment. At the heart of it
+// is a Docker image or Dockerfile which controls the tools available in your environment.
+//
+// See https://aka.ms/devcontainer.json for more information.
+{
+  "name": "Workspace",
+  // Use "image": "mcr.microsoft.com/vscode/devcontainers/base:ubuntu",
+  // instead of the build to use a pre-built image.
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "docker compose up -d",
+  // Features add additional features to your environment. See https://containers.dev/features
+  // Beware: features are not supported on all platforms and may have unintended side-effects.
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "charliermarsh.ruff"],
+      "settings": {
+        "python.defaultInterpreterPath": "/app/.venv/bin/python"
+      }
+    }
+  }
+}
