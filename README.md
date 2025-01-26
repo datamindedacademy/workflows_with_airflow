@@ -17,39 +17,36 @@ through. Learn about Apache Airflow, one of the most popular ways to
 orchestrate work, while allowing for a pleasant dashboard to follow up the
 daily progress of tasks that had to be completed.
 
-
 ## Getting started
 
 You can simply click the button below to start the exercise environment within
-Gitpod.
+GitHub Codespaces.
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/datamindedacademy/workflows_with_airflow)
 
-[![Open in Gitpod](
-    https://gitpod.io/button/open-in-gitpod.svg
-)](https://gitpod.io/#https://github.com/datamindedacademy/workflows_with_airflow)
 
 ### Airflow UI
 
-The Gitpod environment will set up an Airflow instance for you to use during the
+The GitHub Codespaces environment will set up an Airflow instance for you to use during the
 exercise session. The Airflow UI will load in a new browser window once the
 startup is complete. You can log in to the UI using "airflow" both as username
 and password.
 
 ### Mounted folders
 
-The Gitpod environment you receive will contain three folders:
+The GitHub Codespaces environment you receive will contain three folders:
 
 1. exercises
 2. solutions
 3. mount
 
-The folder named *mount* will contain three sub-folders: dags, logs and plugins.
+The folder named _mount_ will contain three sub-folders: dags, logs and plugins.
 These three folders will reflect the internal state of Airflow for these points,
 and can be used to upload DAGs or plugins into Airflow, or download log files.
 
 ### Debugging
 
-When you need access to the containerized Airflow environment, use 
+When you need access to the containerized Airflow environment, use
 
 ```shell
-docker-compose run airflow-cli bash
+docker compose run airflow-cli bash
 ```
