@@ -13,7 +13,7 @@ MY_NAME = ...
 MY_BIRTHDAY = dt.datetime(...)
 
 dag = DAG(
-    dag_id="happy_birthday_v1",
+    dag_id="2_happy_birthday_v1",
     description="Wishes you a happy birthday",
     default_args={"owner": "Airflow"},
     schedule_interval="@yearly",

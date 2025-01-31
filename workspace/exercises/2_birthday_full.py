@@ -13,7 +13,7 @@ MY_NAME = "Barack Obama"
 MY_BIRTHDAY = datetime(year=1961, month=8, day=4, tz="Pacific/Honolulu")
 
 dag = DAG(
-    dag_id="happy_birthday_v2",
+    dag_id="2_happy_birthday_v2",
     description="Wishes you a happy birthday",
     default_args={"owner": "Airflow"},
     schedule_interval="0 0 4 8 *",

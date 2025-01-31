@@ -7,17 +7,17 @@ from airflow import DAG
 Exercise 1
 
 This DAG seems to take a long time to load.
-(Have a look at the scheduler logs if you're unsure about this)
+(Have a look at the scheduler logs if you're unsure about this: run `docker compose logs -f airflow-scheduler`)
 
 Can you figure out why, and how to fix it?
 """
 
 dag = DAG(
-    dag_id="investment_analysis",
+    dag_id="1_investment_analysis",
     description="Analyze investment data",
     default_args={"owner": "Airflow"},
     schedule_interval="@once",
-    start_date=dt.datetime(2024, 9, 1),
+    start_date=dt.datetime(2025, 1, 1),
     catchup=False,
 )
 

@@ -1,0 +1,10 @@
+[project]
+name = "workflows-with-airflow"
+version = "0.1.0"
+description = "Academy course for workflows with Apache Airflow"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "apache-airflow>=2.10.4",
+    "pandas>=2.2.3",
+]

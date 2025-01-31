@@ -4,15 +4,18 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 
 """
-Exercise 3
+Exercise 4
 
-This DAG contains a lot of repetitive, duplicated and ultimately boring code.
-Can you simplify this DAG and make it more concise?
+Can you modify this DAG in such a way that downstream tasks (e, f, g, h)
+will still start, even when the upstream task 'd' failed?
+
+BONUS: Can you make it so that downstream tasks will only run if at least one upstream task has succeeded,
+but not if all upstream tasks failed?
 """
 
 dag = DAG(
-    dag_id="3_repetitive_tasks",
-    description="Many tasks in parallel",
+    dag_id="4_failing_tasks",
+    description="failing tasks",
     default_args={"owner": "Airflow"},
     schedule_interval="@daily",
     start_date=dt.datetime(2025, 1, 1),
@@ -32,7 +35,7 @@ task_c = BashOperator(
 )
 
 task_d = BashOperator(
-    task_id="task_d", dag=dag, bash_command="echo 'task_d done'"
+    task_id="task_d", dag=dag, bash_command="echo 'task_d failed'; exit -1"
 )
 
 task_e = BashOperator(
