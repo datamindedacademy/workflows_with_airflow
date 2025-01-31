@@ -31,7 +31,7 @@ with processing_dag:
 
 # Reporting DAG - scheduled to run when the dataset is updated
 reporting_dag = DAG(
-    dag_id="solution_reporting_pipeline",
+    dag_id="7_solution_reporting_pipeline",
     description="Generates and sends reports",
     default_args={"owner": "Reporting Team"},
     start_date=dt.datetime(2025, 1, 1),
