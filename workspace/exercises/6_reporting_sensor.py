@@ -7,7 +7,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 """
 Exercise 6
 
-We've built a second DAG to create a report at 6 AM, based on data generated at midnight.
+We've built a DAG to create a report at 6 AM, based on data generated at midnight.
 A sensor is used to check that the data processing was successful 
 (we don't want to generate a report on incomplete data).
 

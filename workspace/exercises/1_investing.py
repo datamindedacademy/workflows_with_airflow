@@ -7,7 +7,7 @@ from airflow import DAG
 Exercise 1
 
 This DAG seems to take a long time to load.
-(Have a look at the scheduler logs if you're unsure about this)
+(Have a look at the scheduler logs if you're unsure about this: run `docker compose logs -f airflow-scheduler`)
 
 Can you figure out why, and how to fix it?
 """
