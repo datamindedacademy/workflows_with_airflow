@@ -1,7 +1,7 @@
 import datetime as dt
 
 from airflow import DAG
-from airflow.operators.dummy import DummyOperator
+from airflow.operators.empty import EmptyOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 
 """
@@ -19,8 +19,8 @@ processing_dag = DAG(
     description="Processes and stores data",
     default_args={"owner": "Processing Team"},
     schedule_interval="@daily",
-    start_date=dt.datetime(2024, 9, 1),
-    end_date=dt.datetime(2024, 9, 15),
+    start_date=dt.datetime(2025, 1, 1),
+    end_date=dt.datetime(2025, 1, 15),
 )
 
 reporting_dag = DAG(
@@ -28,13 +28,13 @@ reporting_dag = DAG(
     description="Generates and sends reports",
     default_args={"owner": "Reporting Team"},
     schedule_interval="0 6 * * *",
-    start_date=dt.datetime(2024, 9, 1),
-    end_date=dt.datetime(2024, 9, 15),
+    start_date=dt.datetime(2025, 1, 1),
+    end_date=dt.datetime(2025, 1, 15),
 )
 
 with processing_dag:
-    process = DummyOperator(task_id="process_data")
-    done = DummyOperator(task_id="done")
+    process = EmptyOperator(task_id="process_data")
+    done = EmptyOperator(task_id="done")
     process >> done
 
 with reporting_dag:
@@ -44,6 +44,6 @@ with reporting_dag:
         external_task_id="done",
     )
 
-    report = DummyOperator(task_id="generate_report")
-    send = DummyOperator(task_id="send_report")
+    report = EmptyOperator(task_id="generate_report")
+    send = EmptyOperator(task_id="send_report")
     sensor >> report >> send

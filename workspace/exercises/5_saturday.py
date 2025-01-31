@@ -2,7 +2,7 @@ import datetime as dt
 
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.dummy import DummyOperator
+from airflow.operators.empty import EmptyOperator
 
 """
 Exercise 5
@@ -18,8 +18,8 @@ dag = DAG(
     description="On saturdays we run aggregations",
     default_args={"owner": "Airflow"},
     schedule_interval="@daily",
-    start_date=dt.datetime(2024, 9, 1),
-    end_date=dt.datetime(2024, 9, 15),
+    start_date=dt.datetime(2025, 1, 1),
+    end_date=dt.datetime(2025, 1, 15),
 )
 
 
@@ -38,7 +38,7 @@ def create_task(name):
 
 ingestion_task = create_task("ingestion")
 cleaning_task = create_task("cleaning")
-all_done = DummyOperator(task_id="all_done", dag=dag)
+all_done = EmptyOperator(task_id="all_done", dag=dag)
 
 if today_is_saturday():
     aggregation_task = create_task("aggregation")
