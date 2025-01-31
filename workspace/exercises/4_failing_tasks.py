@@ -4,7 +4,7 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 
 """
-Exercise 8
+Exercise 4
 
 Can you modify this DAG in such a way that downstream tasks (e, f, g, h)
 will still start, even when the upstream task 'd' failed?
@@ -14,8 +14,8 @@ but not if all upstream tasks failed?
 """
 
 dag = DAG(
-    dag_id="8_failing_tasks",
-    description="Many tasks in parallel",
+    dag_id="4_failing_tasks",
+    description="failing tasks",
     default_args={"owner": "Airflow"},
     schedule_interval="@daily",
     start_date=dt.datetime(2025, 1, 1),

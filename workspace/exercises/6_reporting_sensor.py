@@ -24,7 +24,7 @@ processing_dag = DAG(
 )
 
 reporting_dag = DAG(
-    dag_id="reporting_pipeline",
+    dag_id="6_reporting_pipeline",
     description="Generates and sends reports",
     default_args={"owner": "Reporting Team"},
     schedule_interval="0 6 * * *",
@@ -39,8 +39,8 @@ with processing_dag:
 
 with reporting_dag:
     sensor = ExternalTaskSensor(
-        task_id="processing_done",
-        external_dag_id="processing_pipeline",
+        task_id="6_processing_done",
+        external_dag_id="6_processing_pipeline",
         external_task_id="done",
     )
 

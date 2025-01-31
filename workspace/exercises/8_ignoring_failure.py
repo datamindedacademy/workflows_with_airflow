@@ -1,5 +1,5 @@
 """
-# Exercise 4
+# Exercise 8
 
 Some operators, like the BranchPythonOperator,
 allow you to skip tasks. Often, you will want to
@@ -17,7 +17,7 @@ from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator
 
 dag = DAG(
-    dag_id="4_parallel_tasks",
+    dag_id="8_ignoring_failure",
     description="Many tasks in parallel",
     default_args={"owner": "Airflow"},
     schedule_interval="@daily",
