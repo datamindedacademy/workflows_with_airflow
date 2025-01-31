@@ -17,7 +17,7 @@ from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator
 
 dag = DAG(
-    dag_id="parallel_tasks",
+    dag_id="4_parallel_tasks",
     description="Many tasks in parallel",
     default_args={"owner": "Airflow"},
     schedule_interval="@daily",

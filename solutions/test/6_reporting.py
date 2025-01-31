@@ -15,7 +15,7 @@ However, the sensor is not working correctly. Do you see what's wrong?
 """
 
 processing_dag = DAG(
-    dag_id="6_processing_pipeline",
+    dag_id="solution_6_processing_pipeline",
     description="Processes and stores data",
     default_args={"owner": "Processing Team"},
     schedule_interval="@daily",
@@ -24,7 +24,7 @@ processing_dag = DAG(
 )
 
 reporting_dag = DAG(
-    dag_id="reporting_pipeline",
+    dag_id="solution_reporting_pipeline",
     description="Generates and sends reports",
     default_args={"owner": "Reporting Team"},
     schedule_interval="0 6 * * *",
@@ -42,6 +42,7 @@ with reporting_dag:
         task_id="processing_done",
         external_dag_id="processing_pipeline",
         external_task_id="done",
+        execution_delta=dt.timedelta(hours=6),
     )
 
     report = EmptyOperator(task_id="generate_report")

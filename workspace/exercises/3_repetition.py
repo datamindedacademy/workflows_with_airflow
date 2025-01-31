@@ -11,7 +11,7 @@ Can you simplify this DAG and make it more concise?
 """
 
 dag = DAG(
-    dag_id="repetitive_tasks",
+    dag_id="3_repetitive_tasks",
     description="Many tasks in parallel",
     default_args={"owner": "Airflow"},
     schedule_interval="@daily",
