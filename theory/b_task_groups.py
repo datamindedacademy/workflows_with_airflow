@@ -2,7 +2,7 @@ from datetime import timedelta
 
 import pendulum
 from airflow import DAG
-from airflow.operators.dummy import DummyOperator
+from airflow.operators.empty import EmptyOperator
 
 dag = DAG(
     dag_id="task_group_required",
@@ -17,18 +17,18 @@ dag = DAG(
         "retry_delay": timedelta(minutes=5),
     },
     description="A cluttered DAG",
-    schedule_interval="*/5 14 * * *",
+    schedule="*/5 14 * * *",
     start_date=pendulum.datetime(2021, 1, 1, tz="Europe/Brussels"),
     catchup=False,
     tags=["style", "timezone"],
 )
 with dag:
     start, middle, end = [
-        DummyOperator(task_id=s) for s in ("start", "middle", "end")
+        EmptyOperator(task_id=s) for s in ("start", "middle", "end")
     ]
     indices = range(1, 6)
     task_set_1, task_set_2 = [
-        [DummyOperator(task_id=f"section-{section}-task-{n}") for n in indices]
+        [EmptyOperator(task_id=f"section-{section}-task-{n}") for n in indices]
         for section in (1, 2)
     ]
 

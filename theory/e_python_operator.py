@@ -8,7 +8,7 @@ def say_hello(ds=None):
 
 with DAG(
     dag_id="python-operator-example",
-    schedule_interval="@daily",
+    schedule="@daily",
     start_date=pendulum.datetime(2023, 1, 1, tz="Europe/Brussels"),
 ) as dag:
     task = PythonOperator(

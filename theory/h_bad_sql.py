@@ -7,7 +7,7 @@ table = "SALES"
 
 with DAG(
     dag_id="need-for-context-example", 
-    schedule_interval="@daily",
+    schedule="@daily",
     start_date=pendulum. datetime (2022, 1, 1, tz= "Europe/Brussels"), 
 ) as dag:
     revenue = PostgresOperator (

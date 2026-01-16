@@ -19,7 +19,7 @@ with DAG(
         "retry_delay": timedelta(minutes=5),
     },
     description="An example of how to use XComs",
-    schedule_interval="*/5 * * * *",
+    schedule="*/5 * * * *",
     start_date=pendulum.datetime(2021, 1, 1, tz="Europe/Brussels"),
     catchup=False,
     tags=["XCom", "timezone"],

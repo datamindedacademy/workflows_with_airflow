@@ -1,3 +1,3 @@
-FROM apache/airflow:2.10.1
+FROM apache/airflow:3.1.6
 
 USER airflow

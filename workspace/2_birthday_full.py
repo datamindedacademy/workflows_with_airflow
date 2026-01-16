@@ -13,7 +13,7 @@ MY_NAME = "Barack Obama"
 MY_BIRTHDAY = datetime(year=1961, month=8, day=4, tz="Pacific/Honolulu")
 
 dag = DAG(
-    dag_id="2_happy_birthday_v2",
+    dag_id="solution_2_happy_birthday_v2",
     description="Wishes you a happy birthday",
     default_args={"owner": "Airflow"},
     schedule="0 0 4 8 *",
@@ -24,7 +24,13 @@ dag = DAG(
 
 def years_today():
     """Returns how old you are at this moment"""
-    return 0  # TODO: create a working implementation
+    # Note: both arguments to relativedelta are timezone aware - compare apples to apples!
+    return (
+        "{{ macros.dateutil.relativedelta.relativedelta("
+        "data_interval_end, "
+        "dag.start_date"
+        ").years }}"
+    )
 
 
 birthday_greeting = BashOperator(

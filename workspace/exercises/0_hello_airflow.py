@@ -28,7 +28,7 @@ with DAG(
     dag_display_name='🤖 Hello Airflow 🚀',
     default_args=default_args,
     description='A DAG demonstrating the use of SmoothOperator',
-    schedule_interval=timedelta(days=1),  # Adjust as needed
+    schedule=timedelta(days=1),  # Adjust as needed
     catchup=False,
 ) as dag:
 

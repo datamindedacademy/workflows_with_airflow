@@ -15,9 +15,10 @@ import random
 from airflow import DAG
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator
+from airflow.utils.trigger_rule import TriggerRule
 
 dag = DAG(
-    dag_id="8_ignoring_failure",
+    dag_id="solution_8_ignoring_failure",
     description="Many tasks in parallel",
     default_args={"owner": "Airflow"},
     schedule="@daily",
@@ -41,6 +42,8 @@ dummies[0] >> branch >> [dummies[1], dummies[2]]
 
 dummies[1] >> dummies[3]
 dummies[2] >> dummies[4]
+
+dummies[5].trigger_rule = TriggerRule.ONE_SUCCESS
 
 # Dummies[5] recombines the 2 branches. However, we don't want it skipped.
 [dummies[3], dummies[4]] >> dummies[5] >> dummies[6]

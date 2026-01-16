@@ -17,7 +17,7 @@ dag = DAG(
     dag_id="4_failing_tasks",
     description="failing tasks",
     default_args={"owner": "Airflow"},
-    schedule_interval="@daily",
+    schedule="@daily",
     start_date=dt.datetime(2025, 1, 1),
     end_date=dt.datetime(2025, 1, 15),
 )

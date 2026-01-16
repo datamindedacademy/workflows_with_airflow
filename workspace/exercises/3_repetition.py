@@ -14,7 +14,7 @@ dag = DAG(
     dag_id="3_repetitive_tasks",
     description="Many tasks in parallel",
     default_args={"owner": "Airflow"},
-    schedule_interval="@daily",
+    schedule="@daily",
     start_date=dt.datetime(2025, 1, 1),
     end_date=dt.datetime(2025, 1, 15),
 )

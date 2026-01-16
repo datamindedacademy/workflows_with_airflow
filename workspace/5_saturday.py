@@ -3,6 +3,7 @@ import datetime as dt
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
+from airflow.operators.weekday import BranchDayOfWeekOperator
 
 """
 Exercise 5
@@ -14,18 +15,13 @@ What's wrong? And how can you fix this?
 """
 
 dag = DAG(
-    dag_id="5_aggregate_on_saturday",
+    dag_id="solution_5_aggregate_on_saturday",
     description="On saturdays we run aggregations",
     default_args={"owner": "Airflow"},
     schedule="@daily",
     start_date=dt.datetime(2025, 1, 1),
     end_date=dt.datetime(2025, 1, 15),
 )
-
-
-def today_is_saturday():
-    today = dt.date.today()
-    return today.isoweekday() == 6
 
 
 def create_task(name):
@@ -38,10 +34,16 @@ def create_task(name):
 
 ingestion_task = create_task("ingestion")
 cleaning_task = create_task("cleaning")
-all_done = EmptyOperator(task_id="all_done", dag=dag)
+aggregation_task = create_task("aggregation")
+all_done = EmptyOperator(task_id="all_done", dag=dag, trigger_rule="all_done")
 
-if today_is_saturday():
-    aggregation_task = create_task("aggregation")
-    ingestion_task >> cleaning_task >> aggregation_task >> all_done
-else:
-    ingestion_task >> cleaning_task >> all_done
+branch_for_saturday = BranchDayOfWeekOperator(
+    task_id="is_it_saturday",
+    dag=dag,
+    use_task_logical_date=True,
+    follow_task_ids_if_true=aggregation_task.task_id,
+    follow_task_ids_if_false=all_done.task_id,
+    week_day="saturday",
+)
+
+ingestion_task >> cleaning_task >> branch_for_saturday >> aggregation_task >> all_done
