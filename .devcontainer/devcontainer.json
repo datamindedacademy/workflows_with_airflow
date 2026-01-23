@@ -10,7 +10,7 @@
     "context": "..",
     "dockerfile": "Dockerfile"
   },
-  "postCreateCommand": "AIRFLOW_UID=50000 docker compose up -d",
+  // "postCreateCommand": "AIRFLOW_UID=50000 docker compose up -d",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workflows-with-airflow,type=bind,consistency=cached",
    "workspaceFolder": "/workflows-with-airflow/workspace",
   // Features add additional features to your environment. See https://containers.dev/features
