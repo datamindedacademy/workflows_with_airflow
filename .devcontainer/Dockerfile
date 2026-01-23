@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/python:3.12-bullseye
+FROM mcr.microsoft.com/devcontainers/python:3.11-bullseye
 
 # use this Dockerfile to install additional tools you might need, e.g.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
