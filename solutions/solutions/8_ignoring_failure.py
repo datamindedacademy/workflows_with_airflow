@@ -22,6 +22,7 @@ dag = DAG(
     description="Many tasks in parallel",
     default_args={"owner": "Airflow"},
     schedule="@daily",
+    catchup=True,
     start_date=dt.datetime(2026, 1, 1),
     end_date=dt.datetime(2026, 3, 1),
 )

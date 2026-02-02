@@ -21,6 +21,7 @@ dag = DAG(
     schedule="@daily",
     start_date=dt.datetime(2026, 1, 1),
     end_date=dt.datetime(2026, 3, 1),
+    catchup=True,
 )
 
 
