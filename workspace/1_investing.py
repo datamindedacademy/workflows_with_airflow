@@ -17,7 +17,7 @@ dag = DAG(
     description="Analyze investment data",
     default_args={"owner": "Airflow"},
     schedule="@once",
-    start_date=dt.datetime(2025, 1, 1),
+    start_date=dt.datetime(2026, 1, 1),
     catchup=False,
 )
 
