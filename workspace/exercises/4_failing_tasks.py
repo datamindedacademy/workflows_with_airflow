@@ -19,7 +19,7 @@ dag = DAG(
     default_args={"owner": "Airflow"},
     schedule="@daily",
     start_date=dt.datetime(2026, 1, 1),
-    end_date=dt.datetime(2026, 2, 2),
+    end_date=dt.datetime(2026, 3, 1),
 )
 
 task_a = BashOperator(

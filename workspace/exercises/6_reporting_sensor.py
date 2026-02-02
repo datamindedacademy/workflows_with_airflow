@@ -20,7 +20,7 @@ processing_dag = DAG(
     default_args={"owner": "Processing Team"},
     schedule="@daily",
     start_date=dt.datetime(2026, 1, 1),
-    end_date=dt.datetime(2026, 2, 2),
+    end_date=dt.datetime(2026, 3, 1),
 )
 
 reporting_dag = DAG(
@@ -29,7 +29,7 @@ reporting_dag = DAG(
     default_args={"owner": "Reporting Team"},
     schedule="0 6 * * *",
     start_date=dt.datetime(2025, 1, 1),
-    end_date=dt.datetime(2026, 2, 2),
+    end_date=dt.datetime(2026, 3, 1),
 )
 
 with processing_dag:
