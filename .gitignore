@@ -150,3 +150,7 @@ cython_debug/
 
 *.ipynb
 logs/
+
+# airflow 
+mount/
+/mount

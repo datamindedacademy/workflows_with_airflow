@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.operators.empty import EmptyOperator
-from airflow.operators.smooth import SmoothOperator
+from airflow.providers.standard.operators.empty import EmptyOperator
+from airflow.providers.standard.operators.smooth import SmoothOperator
 
 
 """
@@ -17,7 +17,7 @@ Copy this file to /workflows-with-airflow/workspace/mount/dags and wait or refre
 default_args = {
     'owner': 'dataminded',
     'depends_on_past': False,
-    'start_date': datetime(2024, 1, 1),
+    'start_date': datetime(2026, 1, 1),
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
 }
@@ -28,7 +28,7 @@ with DAG(
     dag_display_name='🤖 Hello Airflow 🚀',
     default_args=default_args,
     description='A DAG demonstrating the use of SmoothOperator',
-    schedule_interval=timedelta(days=1),  # Adjust as needed
+    schedule=timedelta(days=1),  # Adjust as needed
     catchup=False,
 ) as dag:
 

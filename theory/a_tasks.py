@@ -18,7 +18,7 @@ with DAG(
         "retry_delay": timedelta(minutes=5),
     },
     description="Generate semi-weekly sales report",
-    schedule_interval="@daily",
+    schedule="@daily",
     start_date=pendulum.datetime(2021, 1, 1, tz="Europe/Brussels"),
     end_date=pendulum.datetime(2021, 1, 10, tz="Europe/Brussels"),
     catchup=True,
@@ -55,7 +55,7 @@ with DAG(
 
     empty_task >> [EmptyOperator(task_id="signal_done")]
 # We can simplify this a lot: rather than scheduling it daily, we can adapt the
-# schedule_interval to use CRON syntax. Though keep in mind that it will then
+# schedule to use CRON syntax. Though keep in mind that it will then
 # run with different data intervals, so if you depend on those parameters (e.g.
 # in templates) then you cannot simply change to this alternative.
 

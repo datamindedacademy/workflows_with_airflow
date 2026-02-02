@@ -1,6 +1,6 @@
 import datetime as dt
 from airflow import DAG
-from airflow.providers.standard.operators.empty import EmptyOperator
+from airflow.operators.empty import EmptyOperator
 from airflow.datasets import Dataset
 
 """
@@ -16,12 +16,12 @@ data_ready = Dataset("s3://bucket_name/ingress/processed.csv")
 
 # Processing DAG - produces the dataset
 processing_dag = DAG(
-    dag_id="7_processing_pipeline",
+    dag_id="solution_7_processing_pipeline",
     description="Processes and stores data",
     default_args={"owner": "Processing Team"},
     schedule="@daily",
-    start_date=dt.datetime(2026, 1, 1),
-    end_date=dt.datetime(2026, 3, 1),
+    start_date=dt.datetime(2025, 1, 1),
+    end_date=dt.datetime(2025, 1, 15),
 )
 
 with processing_dag:
@@ -31,11 +31,13 @@ with processing_dag:
 
 # Reporting DAG - scheduled to run when the dataset is updated
 reporting_dag = DAG(
-    dag_id="7_solution_reporting_pipeline",
+    dag_id="solution_7_reporting_pipeline",
     description="Generates and sends reports",
     default_args={"owner": "Reporting Team"},
+    # No explicit schedule, this DAG is triggered by dataset update
+    schedule=[data_ready],  # Triggered when the dataset is updated
     start_date=dt.datetime(2025, 1, 1),
-    end_date=dt.datetime(2026, 3, 1),
+    end_date=dt.datetime(2025, 1, 15),
 )
 
 with reporting_dag:

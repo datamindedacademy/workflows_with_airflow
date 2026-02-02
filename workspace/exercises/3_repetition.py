@@ -1,7 +1,7 @@
 import datetime as dt
 
 from airflow import DAG
-from airflow.operators.bash import BashOperator
+from airflow.providers.standard.operators.bash import BashOperator
 
 """
 Exercise 3
@@ -14,9 +14,9 @@ dag = DAG(
     dag_id="3_repetitive_tasks",
     description="Many tasks in parallel",
     default_args={"owner": "Airflow"},
-    schedule_interval="@daily",
-    start_date=dt.datetime(2025, 1, 1),
-    end_date=dt.datetime(2025, 1, 15),
+    schedule="@daily",
+    start_date=dt.datetime(2026, 1, 1),
+    end_date=dt.datetime(2026, 3, 1),
 )
 
 task_a = BashOperator(

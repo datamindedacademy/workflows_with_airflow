@@ -1,19 +1,19 @@
 import datetime as dt
 
-import pandas as pd
 from airflow import DAG
+from airflow.providers.standard.operators.python import PythonOperator
 
 """
 Exercise 1
 
 This DAG seems to take a long time to load.
-(Have a look at the scheduler logs if you're unsure about this: run `docker compose logs -f airflow-scheduler`)
+(Have a look at the scheduler logs if you're unsure about this)
 
 Can you figure out why, and how to fix it?
 """
 
 dag = DAG(
-    dag_id="1_investment_analysis",
+    dag_id="solution_1_investment_analysis",
     description="Analyze investment data",
     default_args={"owner": "Airflow"},
     schedule="@once",
@@ -26,6 +26,7 @@ def load_data():
     from io import BytesIO
     from zipfile import ZipFile
 
+    import pandas as pd
     import requests
 
     investment_link = "https://eforexcel.com/wp/wp-content/uploads/2021/09/2000000-HRA-Records.zip"
@@ -51,10 +52,17 @@ def run_analysis(df):
 
 
 def store_results(df):
-    df.to_csv("./investment.csv")
+    output_path = "/opt/airflow/dags/investment.csv"
+    df.to_csv(output_path)
+    print(f"CSV file written to: {output_path}")
 
 
-with dag:
+def pipeline():
     df_investment = load_data()
     results = run_analysis(df_investment)
     store_results(results)
+
+
+with dag:
+    # No pipeline code is executed during DAG parsing
+    PythonOperator(task_id="analyze_investment_data", python_callable=pipeline)

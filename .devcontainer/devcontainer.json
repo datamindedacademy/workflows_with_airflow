@@ -10,9 +10,10 @@
     "context": "..",
     "dockerfile": "Dockerfile"
   },
-  "postCreateCommand": "AIRFLOW_UID=50000 docker compose up -d",
+  "postCreateCommand": "bash -c 'mkdir -p /workflows-with-airflow/workspace/mount/{logs,dags,plugins} && chmod -R 777 /workflows-with-airflow/workspace/mount'",
+  "postStartCommand": "cd /workflows-with-airflow && AIRFLOW_UID=50000 docker compose up -d",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workflows-with-airflow,type=bind,consistency=cached",
-   "workspaceFolder": "/workflows-with-airflow/workspace",
+  "workspaceFolder": "/workflows-with-airflow/workspace",
   // Features add additional features to your environment. See https://containers.dev/features
   // Beware: features are not supported on all platforms and may have unintended side-effects.
   "features": {
@@ -26,10 +27,10 @@
       }
     }
   },
-  "forwardPorts": [80],
+  "forwardPorts": [8080],
   "hostRequirements": {
-     "cpus": 4,
-     "memory": "16gb",
-     "storage": "32gb"
+    "cpus": 4,
+    "memory": "16gb",
+    "storage": "32gb"
   }
 }

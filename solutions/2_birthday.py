@@ -1,7 +1,7 @@
 import datetime as dt
 
 from airflow import DAG
-from airflow.providers.standard.operators.bash import BashOperator
+from airflow.operators.bash import BashOperator
 
 """
 Exercise 2
@@ -9,16 +9,16 @@ Exercise 2
 Create a DAG which will run on your birthday to congratulate you.
 """
 
-MY_NAME = ...
-MY_BIRTHDAY = dt.datetime(...)
+MY_NAME = "Barack Obama"
+MY_BIRTHDAY = dt.datetime(year=1961, month=8, day=4)
 
 dag = DAG(
-    dag_id="2_happy_birthday_v1",
+    dag_id="solution_2_happy_birthday_v1",
     description="Wishes you a happy birthday",
     default_args={"owner": "Airflow"},
-    schedule="@yearly",
-    start_date=...,
-    catchup=False
+    schedule="0 0 4 8 *",
+    start_date=MY_BIRTHDAY,
+    catchup=False,
 )
 
 birthday_greeting = BashOperator(
