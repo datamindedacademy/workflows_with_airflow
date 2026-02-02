@@ -1,8 +1,8 @@
 import datetime as dt
 
 from airflow import DAG
-from airflow.operators.bash import BashOperator
-from airflow.operators.empty import EmptyOperator
+from airflow.providers.standard.operators.bash import BashOperator
+from airflow.providers.standard.operators.empty import EmptyOperator
 from airflow.operators.weekday import BranchDayOfWeekOperator
 
 """
@@ -19,8 +19,9 @@ dag = DAG(
     description="On saturdays we run aggregations",
     default_args={"owner": "Airflow"},
     schedule="@daily",
-    start_date=dt.datetime(2025, 1, 1),
-    end_date=dt.datetime(2025, 1, 15),
+    start_date=dt.datetime(2026, 1, 1),
+    end_date=dt.datetime(2026, 3, 1),
+    catchup=True,
 )
 
 

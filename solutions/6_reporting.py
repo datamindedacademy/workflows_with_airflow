@@ -2,7 +2,7 @@ import datetime as dt
 
 from airflow import DAG
 from airflow.providers.standard.operators.empty import EmptyOperator
-from airflow.providers.standard.sensors.external_task import ExternalTaskSensor
+from airflow.sensors.external_task import ExternalTaskSensor
 
 """
 Exercise 6
@@ -19,7 +19,7 @@ processing_dag = DAG(
     description="Processes and stores data",
     default_args={"owner": "Processing Team"},
     schedule="@daily",
-    start_date=dt.datetime(2025, 1, 1),
+    start_date=dt.datetime(2026, 1, 1),
     end_date=dt.datetime(2026, 3, 1),
 )
 
@@ -42,7 +42,6 @@ with reporting_dag:
         task_id="processing_done",
         external_dag_id="solution_6_processing_pipeline",
         external_task_id="done",
-        deferrable=True,
         execution_delta=dt.timedelta(hours=6),
     )
 

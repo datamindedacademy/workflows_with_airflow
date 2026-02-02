@@ -1,6 +1,6 @@
 import datetime as dt
 from airflow import DAG
-from airflow.operators.empty import EmptyOperator
+from airflow.providers.standard.operators.empty import EmptyOperator
 from airflow.datasets import Dataset
 
 """
@@ -20,8 +20,8 @@ processing_dag = DAG(
     description="Processes and stores data",
     default_args={"owner": "Processing Team"},
     schedule="@daily",
-    start_date=dt.datetime(2025, 1, 1),
-    end_date=dt.datetime(2025, 1, 15),
+    start_date=dt.datetime(2026, 1, 1),
+    end_date=dt.datetime(2026, 3, 1),
 )
 
 with processing_dag:
@@ -37,7 +37,7 @@ reporting_dag = DAG(
     # No explicit schedule, this DAG is triggered by dataset update
     schedule=[data_ready],  # Triggered when the dataset is updated
     start_date=dt.datetime(2025, 1, 1),
-    end_date=dt.datetime(2025, 1, 15),
+    end_date=dt.datetime(2026, 3, 1),
 )
 
 with reporting_dag:

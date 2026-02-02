@@ -1,7 +1,7 @@
 import datetime as dt
 
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.providers.standard.operators.python import PythonOperator
 
 """
 Exercise 1
@@ -17,7 +17,7 @@ dag = DAG(
     description="Analyze investment data",
     default_args={"owner": "Airflow"},
     schedule="@once",
-    start_date=dt.datetime(2025, 1, 1),
+    start_date=dt.datetime(2026, 1, 1),
     catchup=False,
 )
 
@@ -52,7 +52,9 @@ def run_analysis(df):
 
 
 def store_results(df):
-    df.to_csv("./investment.csv")
+    output_path = "/opt/airflow/dags/investment.csv"
+    df.to_csv(output_path)
+    print(f"CSV file written to: {output_path}")
 
 
 def pipeline():

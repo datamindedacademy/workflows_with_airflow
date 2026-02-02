@@ -13,8 +13,8 @@ import datetime as dt
 import random
 
 from airflow import DAG
-from airflow.operators.empty import EmptyOperator
-from airflow.operators.python import BranchPythonOperator
+from airflow.providers.standard.operators.empty import EmptyOperator
+from airflow.providers.standard.operators.python import BranchPythonOperator
 from airflow.utils.trigger_rule import TriggerRule
 
 dag = DAG(
@@ -22,8 +22,9 @@ dag = DAG(
     description="Many tasks in parallel",
     default_args={"owner": "Airflow"},
     schedule="@daily",
-    start_date=dt.datetime(2025, 1, 1),
-    end_date=dt.datetime(2025, 1, 15),
+    catchup=True,
+    start_date=dt.datetime(2026, 1, 1),
+    end_date=dt.datetime(2026, 3, 1),
 )
 
 dummies = [EmptyOperator(task_id=f"task{n}", dag=dag) for n in range(7)]

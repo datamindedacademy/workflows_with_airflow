@@ -2,8 +2,8 @@ import datetime as dt
 
 from airflow import DAG
 from airflow.models.baseoperator import cross_downstream
-from airflow.operators.bash import BashOperator
-from airflow.operators.empty import EmptyOperator
+from airflow.providers.standard.operators.bash import BashOperator
+from airflow.providers.standard.operators.empty import EmptyOperator
 
 """
 Exercise 3
@@ -17,8 +17,8 @@ dag = DAG(
     description="Many tasks in parallel",
     default_args={"owner": "Airflow"},
     schedule="@daily",
-    start_date=dt.datetime(2025, 1, 1),
-    end_date=dt.datetime(2025, 1, 15),
+    start_date=dt.datetime(2026, 1, 1),
+    end_date=dt.datetime(2026, 3, 1),
 )
 
 
@@ -36,3 +36,4 @@ if use_dummy:
     left >> EmptyOperator(task_id="join", dag=dag) >> right
 else:
     cross_downstream(from_tasks=left, to_tasks=right)
+    
