@@ -2,8 +2,8 @@ import datetime as dt
 
 from airflow import DAG
 from airflow.models.baseoperator import cross_downstream
-from airflow.operators.bash import BashOperator
-from airflow.operators.empty import EmptyOperator
+from airflow.providers.standard.operators.bash import BashOperator
+from airflow.providers.standard.operators.empty import EmptyOperator
 
 """
 Exercise 3

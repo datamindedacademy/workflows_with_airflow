@@ -13,8 +13,8 @@ import datetime as dt
 import random
 
 from airflow import DAG
-from airflow.operators.empty import EmptyOperator
-from airflow.operators.python import BranchPythonOperator
+from airflow.providers.standard.operators.empty import EmptyOperator
+from airflow.providers.standard.operators.python import BranchPythonOperator
 
 dag = DAG(
     dag_id="8_ignoring_failure",
