@@ -52,7 +52,9 @@ def run_analysis(df):
 
 
 def store_results(df):
-    df.to_csv("./investment.csv")
+    output_path = "/opt/airflow/dags/investment.csv"
+    df.to_csv(output_path)
+    print(f"CSV file written to: {output_path}")
 
 
 def pipeline():
