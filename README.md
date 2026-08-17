@@ -21,6 +21,7 @@ daily progress of tasks that had to be completed.
 
 You can simply click the button below to start the exercise environment within
 GitHub Codespaces.
+[![Dataminded Academy](https://raw.githubusercontent.com/datamindedacademy/branding/main/assets/badge.svg)](https://github.com/datamindedacademy)
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/datamindedacademy/workflows_with_airflow)
 
 
