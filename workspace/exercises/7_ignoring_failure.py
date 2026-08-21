@@ -1,13 +1,15 @@
 """
-# Exercise 8
+Exercise 7: Trigger rules with retries & branching
 
-Some operators, like the BranchPythonOperator,
-allow you to skip tasks. Often, you will want to
-do something after this branch, regardless of
-whether or not the step has been skipped. To do
-so, the task that depends on the skipped task
-and the non-skipped task will need to wait for
-one of them to be successfully finished.
+Some operators, like the BranchPythonOperator, allow you to skip tasks.
+Often, you will want to do something after this branch, regardless of
+whether or not the step has been skipped. To do so, the task that
+depends on the skipped task and the non-skipped task will need to wait
+for one of them to be successfully finished.
+
+You'll practice: building on exercise 6's trigger rules, now combined
+with retries and a random branch, so you also see how a task's retry
+attempts interact with the trigger rule of whatever comes after it.
 """
 import datetime as dt
 import random
@@ -23,7 +25,7 @@ default_args = {
 }
 
 dag = DAG(
-    dag_id="8_ignoring_failure",
+    dag_id="7_ignoring_failure",
     description="Many tasks in parallel",
     default_args=default_args,
     schedule="@daily",

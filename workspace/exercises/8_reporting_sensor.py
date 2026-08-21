@@ -5,17 +5,22 @@ from airflow.providers.standard.operators.empty import EmptyOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 
 """
-Exercise 6
+Exercise 8: Cross-DAG dependencies: sensors
 
-We've built a second DAG to create a report at 6 AM, based on data generated at midnight.
-A sensor is used to check that the data processing was successful 
-(we don't want to generate a report on incomplete data).
+We've built a DAG to create a report at 6 AM, based on data generated at
+midnight. A sensor is used to check that the data processing was
+successful (we don't want to generate a report on incomplete data).
+
+You'll practice: `ExternalTaskSensor`, and why two DAGs' schedules and
+start_dates need to line up for the sensor to ever find the run it's
+waiting for -- the same schedule-alignment idea from exercise 4, now
+applied across two DAGs instead of one.
 
 However, the sensor is not working correctly. Do you see what's wrong?
 """
 
 processing_dag = DAG(
-    dag_id="solution_6_processing_pipeline",
+    dag_id="8_processing_pipeline",
     description="Processes and stores data",
     default_args={"owner": "Processing Team"},
     schedule="@daily",
@@ -24,7 +29,7 @@ processing_dag = DAG(
 )
 
 reporting_dag = DAG(
-    dag_id="solution_6_reporting_pipeline",
+    dag_id="8_reporting_pipeline",
     description="Generates and sends reports",
     default_args={"owner": "Reporting Team"},
     schedule="0 6 * * *",
@@ -39,10 +44,9 @@ with processing_dag:
 
 with reporting_dag:
     sensor = ExternalTaskSensor(
-        task_id="processing_done",
-        external_dag_id="solution_6_processing_pipeline",
+        task_id="8_processing_done",
+        external_dag_id="8_processing_pipeline",
         external_task_id="done",
-        execution_delta=dt.timedelta(hours=6),
     )
 
     report = EmptyOperator(task_id="generate_report")

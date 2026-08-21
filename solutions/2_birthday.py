@@ -4,9 +4,12 @@ from airflow import DAG
 from airflow.providers.standard.operators.bash import BashOperator
 
 """
-Exercise 2
+Exercise 2 solution: Scheduling basics
 
-Create a DAG which will run on your birthday to congratulate you.
+Uses an explicit cron expression ("0 0 4 8 *") instead of the `@yearly`
+preset. `@yearly` is fixed to "0 0 1 1 *" (midnight, January 1st)
+regardless of `start_date` -- it does not run on the anniversary of
+`start_date` -- so it can never fire on an August birthday.
 """
 
 MY_NAME = "Barack Obama"

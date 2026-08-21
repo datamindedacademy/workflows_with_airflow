@@ -3,15 +3,19 @@ import datetime as dt
 from airflow.sdk import dag, task
 
 """
-Exercise 9: TaskFlow API, XComs, and Dynamic Task Mapping
+Exercise 10: TaskFlow API, XComs, and Dynamic Task Mapping
 
-Look at `9_xcoms_classicapi.py` in this same folder: it builds a DAG with
-the classical API (DAG() + PythonOperator) that
+Look at `10_xcoms_classicapi.py` in this same folder: it builds a DAG
+with the classical API (DAG() + PythonOperator) that
 1. fetches a list of regions,
 2. processes each region in a dynamically mapped task, and
 3. aggregates all the results into a summary.
 
 Your task: rewrite that same pipeline below using the TaskFlow API.
+
+You'll practice: passing data between tasks via XCom, `.expand()` for
+dynamic task mapping, and the TaskFlow API compared to the classical
+API.
 
 Concepts you'll need:
 1. @dag - turns a function into a DAG factory (replaces DAG())
@@ -21,12 +25,12 @@ Concepts you'll need:
    create one task instance per item in the list
 
 Fill in the TODOs below. When you're done, the DAG should behave exactly
-like `9_xcoms_classicapi.py`.
+like `10_xcoms_classicapi.py`.
 """
 
 
 @dag(
-    dag_id="9_taskflow_dynamic",
+    dag_id="10_taskflow_dynamic",
     description="TaskFlow API and Dynamic Task Mapping",
     schedule="@daily",
     start_date=dt.datetime(2025, 1, 1),

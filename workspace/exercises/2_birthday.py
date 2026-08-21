@@ -4,9 +4,12 @@ from airflow import DAG
 from airflow.providers.standard.operators.bash import BashOperator
 
 """
-Exercise 2
+Exercise 2: Scheduling basics
 
 Create a DAG which will run on your birthday to congratulate you.
+
+You'll practice: `schedule` presets vs. cron expressions, aligning
+`start_date` with the schedule, and `catchup=False`.
 """
 
 MY_NAME = ...

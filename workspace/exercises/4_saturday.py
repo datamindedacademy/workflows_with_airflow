@@ -6,11 +6,16 @@ from airflow.providers.standard.operators.empty import EmptyOperator
 from airflow.providers.standard.operators.python import BranchPythonOperator
 
 """
-Exercise 5
+Exercise 4: Catchup & backfills
 
 Every day we ingest and clean data. On Saturdays we also run an
-aggregation. A colleague already built the branch for this, but the
-DAG is not working correctly. Do you see what's wrong?
+aggregation. A colleague already built the branch for this, but the DAG
+is not working correctly. Do you see what's wrong?
+
+You'll practice: `catchup=True`, backfill windows, and telling the DAG's
+logical/execution date apart from wall-clock `datetime.now()` -- the
+same distinction exercise 3's Jinja template relied on, except this time
+nothing reminds you to use it.
 
 There are three separate problems. Fix them one at a time and re-run:
 each fix will reveal the next.
@@ -29,7 +34,7 @@ had only ever triggered this DAG manually?
 """
 
 dag = DAG(
-    dag_id="5_aggregate_on_saturday",
+    dag_id="4_aggregate_on_saturday",
     description="On saturdays we run aggregations",
     default_args={"owner": "Airflow"},
     schedule="@daily",

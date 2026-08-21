@@ -3,7 +3,7 @@ import datetime as dt
 from airflow.sdk import dag, task
 
 """
-Solution 9: TaskFlow API, XComs, and Dynamic Task Mapping
+Exercise 10 solution: TaskFlow API, XComs, and Dynamic Task Mapping
 
 Key concepts demonstrated:
 1. @dag decorator - Creates a DAG factory function
@@ -14,7 +14,7 @@ Key concepts demonstrated:
 
 
 @dag(
-    dag_id="solution_9_taskflow_dynamic",
+    dag_id="solution_10_taskflow_dynamic",
     description="TaskFlow API and Dynamic Task Mapping",
     schedule="@daily",
     start_date=dt.datetime(2025, 1, 1),

@@ -6,7 +6,7 @@ from airflow.providers.standard.operators.empty import EmptyOperator
 from airflow.providers.standard.operators.python import BranchPythonOperator
 
 """
-Solution 5
+Exercise 4 solution: Catchup & backfills
 
 Three bugs were hiding in the branch:
 
@@ -17,22 +17,21 @@ Three bugs were hiding in the branch:
        'branch_task_ids' must contain only valid task_ids.
    Symptom: 'is_it_saturday' red on every single run.
 
-2. 'publish_results' kept the default trigger rule, all_success. A branch
-   *skips* the arm it does not take, and a skipped upstream never
+2. 'publish_results' kept the default trigger rule, all_success. A
+   branch *skips* the arm it does not take, and a skipped upstream never
    satisfies all_success, so 'publish_results' was skipped on every run.
-   Symptom: the whole tail of the DAG grey, forever.
-   Fix: a trigger rule that tolerates skips but not failures,
-   none_failed_min_one_success.
+   Symptom: the whole tail of the DAG grey, forever. Fix: a trigger rule
+   that tolerates skips but not failures, none_failed_min_one_success.
 
 3. The callable asked dt.date.today() -- the wall clock of whatever
    machine happens to be running the task, at whatever moment it runs.
    Every one of the 15 backfilled runs therefore took the same branch,
-   because they were all executed on the same real-world day. A task must
-   decide based on the date of the *run* it belongs to, not on today.
-   Symptom: 0 or 15 aggregations instead of exactly 2.
-   This is the answer to the BONUS: bug 3 is invisible if you only ever
-   trigger the DAG by hand, because then "today" and the run's date
-   happen to agree.
+   because they were all executed on the same real-world day. A task
+   must decide based on the date of the *run* it belongs to, not on
+   today. Symptom: 0 or 15 aggregations instead of exactly 2. This is
+   the answer to the BONUS: bug 3 is invisible if you only ever trigger
+   the DAG by hand, because then "today" and the run's date happen to
+   agree.
 
 Note that data_interval_start is used rather than logical_date: since
 Airflow 3, logical_date is None for manually triggered runs, whereas
@@ -46,13 +45,13 @@ Two more branch pitfalls worth knowing, not present in this exercise:
   does not exist, and the graph view will not show it.
 * For this specific weekday case there is a purpose-built operator,
   airflow.providers.standard.operators.weekday.BranchDayOfWeekOperator,
-  with a use_task_logical_date flag that exists precisely because of
-  bug 3. Now that you have written the branch yourself, you know what
-  that flag is protecting you from.
+  with a use_task_logical_date flag that exists precisely because of bug
+  3. Now that you have written the branch yourself, you know what that
+  flag is protecting you from.
 """
 
 dag = DAG(
-    dag_id="solution_5_aggregate_on_saturday",
+    dag_id="solution_4_aggregate_on_saturday",
     description="On saturdays we run aggregations",
     default_args={"owner": "Airflow"},
     schedule="@daily",

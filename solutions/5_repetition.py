@@ -6,14 +6,16 @@ from airflow.providers.standard.operators.bash import BashOperator
 from airflow.providers.standard.operators.empty import EmptyOperator
 
 """
-Exercise 3
+Exercise 5 solution: DRY DAGs
 
-This DAG contains a lot of repetitive, duplicated and ultimately boring code.
-Can you simplify this DAG and make it more concise?
+Replaces the 8 hand-written BashOperators and 16 explicit `>>` edges
+with a `create_task()` helper plus either an EmptyOperator join or
+`cross_downstream()`, so adding or removing a task no longer means
+editing every downstream/upstream pair by hand.
 """
 
 dag = DAG(
-    dag_id="solution_3_parallel_tasks",
+    dag_id="solution_5_parallel_tasks",
     description="Many tasks in parallel",
     default_args={"owner": "Airflow"},
     schedule="@daily",

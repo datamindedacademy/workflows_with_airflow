@@ -50,3 +50,23 @@ When you need access to the containerized Airflow environment, use
 ```shell
 docker compose run airflow-cli bash
 ```
+
+## Exercises
+
+The exercises build on each other in the order below: scheduling fundamentals
+first (2-4), then DAG-authoring patterns (5-7), then cross-DAG dependencies
+(8-9), ending with XComs/TaskFlow as the most advanced, self-contained topic.
+
+| # | Exercise | Topic | Concepts |
+|---|---|---|---|
+| 0 | `0_hello_airflow` | Your first DAG | DAG object, operators, task dependencies, deploying a DAG file |
+| 1 | `1_investing` | Top-level code cost | DAG-file parsing cost, why heavy work at import time slows the scheduler |
+| 2 | `2_birthday` | Scheduling basics | `schedule` presets vs. cron expressions, aligning `start_date`, `catchup=False` |
+| 3 | `3_birthday_full` | Templating with Jinja | Jinja-templated fields, `data_interval_end` (logical date) vs. wall-clock time |
+| 4 | `4_saturday` | Catchup & backfills | `catchup=True`, backfill windows, logical/execution date vs. `datetime.now()`, skipped vs. failed states |
+| 5 | `5_repetition` | DRY DAGs | Generating tasks/dependencies programmatically instead of copy-pasting |
+| 6 | `6_failing_tasks` | Trigger rules | Default `ALL_SUCCESS`, `ALL_DONE`/`ONE_SUCCESS`, letting downstream work survive an upstream failure |
+| 7 | `7_ignoring_failure` | Trigger rules with retries & branching | How retries interact with trigger rules, recombining a branch's skipped/succeeded paths |
+| 8 | `8_reporting_sensor` | Cross-DAG dependencies: sensors | `ExternalTaskSensor`, why schedules/start_dates must line up across DAGs |
+| 9 | `9_reporting_dataset_dependence` | Cross-DAG dependencies: datasets | Event-driven/data-aware scheduling (`Dataset`/outlets), contrast with interval-based scheduling |
+| 10 | `10_xcoms_classicapi` / `10_xcoms_taskflowapi` | XComs & dynamic task mapping | Passing data via XCom, `.expand()`, classical API vs. TaskFlow API |

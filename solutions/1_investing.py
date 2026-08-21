@@ -4,12 +4,13 @@ from airflow import DAG
 from airflow.providers.standard.operators.python import PythonOperator
 
 """
-Exercise 1
+Exercise 1 solution: Top-level code cost
 
-This DAG seems to take a long time to load.
-(Have a look at the scheduler logs if you're unsure about this)
-
-Can you figure out why, and how to fix it?
+The DAG called load_data()/run_analysis()/store_results() directly
+inside the `with dag:` block, so the scheduler re-ran the full download,
+sleep, and pandas import every time it parsed the file. Wrapping the
+pipeline in a single PythonOperator moves that work into task execution,
+where it belongs.
 """
 
 dag = DAG(
