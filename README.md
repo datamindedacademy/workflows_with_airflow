@@ -55,7 +55,8 @@ docker compose run airflow-cli bash
 
 The exercises build on each other in the order below: scheduling fundamentals
 first (2-4), then DAG-authoring patterns (5-7), then cross-DAG dependencies
-(8-9), ending with XComs/TaskFlow as the most advanced, self-contained topic.
+(8-9), ending with XComs/TaskFlow (10) and Connections & Hooks (11) as the
+most advanced, self-contained topics.
 
 | # | Exercise | Topic | Concepts |
 |---|---|---|---|
@@ -70,3 +71,32 @@ first (2-4), then DAG-authoring patterns (5-7), then cross-DAG dependencies
 | 8 | `8_reporting_sensor` | Cross-DAG dependencies: sensors | `ExternalTaskSensor`, why schedules/start_dates must line up across DAGs |
 | 9 | `9_reporting_dataset_dependence` | Cross-DAG dependencies: datasets | Event-driven/data-aware scheduling (`Dataset`/outlets), contrast with interval-based scheduling |
 | 10 | `10_xcoms_classicapi` / `10_xcoms_taskflowapi` | XComs & dynamic task mapping | Passing data via XCom, `.expand()`, classical API vs. TaskFlow API |
+| 11 | `11_connections_and_hooks` | Connections & Hooks | Airflow Connections, `PostgresHook`, why hardcoded credentials in a DAG file are a security review finding |
+
+## What's next
+
+Once you've worked through these exercises, you've covered DAG
+structure, scheduling, templating, trigger rules, cross-DAG
+dependencies, XComs, and Connections & Hooks. A few more core Airflow
+concepts are worth exploring on your own from here:
+
+- **Sensor mechanics** — go back to `8_reporting_sensor` and try
+  switching its `ExternalTaskSensor` to `mode="reschedule"`. Compare
+  how that behaves versus the default `poke` mode, and look up
+  `timeout` and `soft_fail` while you're there. A sensor stuck poking
+  is a classic way to quietly starve an entire Airflow instance of
+  worker slots.
+- **Airflow Variables** — try storing a small config value (say, the
+  schema name from exercise 11) as a Variable via "Admin > Variables"
+  or `airflow variables set`, then read it back with `Variable.get()`
+  in a DAG. It's the sibling of what exercise 11's Connections do for
+  credentials, but for arbitrary config instead of secrets.
+- **Failure notifications** — add an `on_failure_callback` (or
+  `email_on_failure`) to one of the trigger-rule DAGs (6 or 7) and
+  watch it fire when a task fails. Reliable alerting is a big part of
+  "orchestrating work" once you're past the tutorial stage.
+
+It's also worth reading up on Airflow's architecture (scheduler,
+webserver, workers, executor types) even though there's no exercise
+for it here — it's more conceptual than something you can poke at
+hands-on in this environment.
