@@ -3,78 +3,58 @@ import datetime as dt
 from airflow.sdk import dag, task
 
 """
-Solution 9: TaskFlow API, XComs, and Dynamic Task Mapping
+Exercise 9: TaskFlow API, XComs, and Dynamic Task Mapping
 
-Key concepts demonstrated:
-1. @dag decorator - Creates a DAG factory function
-2. @task decorator - Converts Python functions to Airflow tasks
-3. Automatic XCom - Return values are automatically passed between tasks
-4. .expand() - Dynamically creates one task instance per input item
+Look at `9_xcoms_classicapi.py` in this same folder: it builds a DAG with
+the classical API (DAG() + PythonOperator) that
+1. fetches a list of regions,
+2. processes each region in a dynamically mapped task, and
+3. aggregates all the results into a summary.
+
+Your task: rewrite that same pipeline below using the TaskFlow API.
+
+Concepts you'll need:
+1. @dag - turns a function into a DAG factory (replaces DAG())
+2. @task - turns a function into a task (replaces PythonOperator)
+3. Automatic XCom - just return a value, no xcom_push/xcom_pull needed
+4. .expand() - call a @task function with a list argument to dynamically
+   create one task instance per item in the list
+
+Fill in the TODOs below. When you're done, the DAG should behave exactly
+like `9_xcoms_classicapi.py`.
 """
 
 
 @dag(
-    dag_id="solution_9_taskflow_dynamic",
+    dag_id="9_taskflow_dynamic",
     description="TaskFlow API and Dynamic Task Mapping",
     schedule="@daily",
     start_date=dt.datetime(2025, 1, 1),
     catchup=False,
-    tags=["solution", "taskflow", "dynamic"],
+    tags=["exercise", "taskflow", "dynamic"],
 )
 def sales_pipeline():
 
-    @task
+    # TODO: turn this into a @task that fetches the regions to process.
+    # Reuse the same region data as in the classical API version.
     def get_regions() -> list[dict]:
-        """Fetch regions to process. In reality, this might query a database."""
-        return [
-            {"name": "North", "sales": [1200, 1500, 1800, 1100]},
-            {"name": "South", "sales": [2200, 2100, 1900]},
-            {"name": "East", "sales": [800, 950, 1100, 1200, 900]},
-            {"name": "West", "sales": [3000, 2800, 3200]},
-        ]
+        raise NotImplementedError("TODO: return the list of regions")
 
-    @task
+    # TODO: turn this into a @task that processes a single region.
+    # It should compute the total and average sales, print a summary,
+    # and return a dict with the results (see the classical version).
     def process_region(region: dict) -> dict:
-        """Process a single region - this task will run once per region."""
-        name = region["name"]
-        total = sum(region["sales"])
-        avg = total / len(region["sales"])
-        
-        print(f"Processing {name}: {len(region['sales'])} transactions")
-        print(f"  Total: ${total:,}")
-        print(f"  Average: ${avg:,.2f}")
-        
-        return {
-            "name": name,
-            "total": total,
-            "count": len(region["sales"]),
-            "average": avg,
-        }
+        raise NotImplementedError("TODO: process a single region")
 
-    @task
+    # TODO: turn this into a @task that aggregates all processed regions
+    # into a printed summary (see the classical version).
     def generate_summary(results: list[dict]) -> None:
-        """Aggregate results from all dynamically mapped tasks."""
-        print("\n" + "=" * 40)
-        print("       REGIONAL SALES SUMMARY")
-        print("=" * 40)
-        
-        grand_total = 0
-        for result in results:
-            print(f"{result['name']:10} | ${result['total']:>8,} | {result['count']} sales")
-            grand_total += result["total"]
-        
-        print("-" * 40)
-        print(f"{'TOTAL':10} | ${grand_total:>8,}")
-        print("=" * 40)
+        raise NotImplementedError("TODO: aggregate and print the summary")
 
-    # Wire up the DAG using TaskFlow patterns:
-    # 1. get_regions() returns a list
-    # 2. .expand() creates one process_region task per list item
-    # 3. generate_summary receives a list of all results (automatic aggregation)
-    
-    regions = get_regions()
-    processed = process_region.expand(region=regions)
-    generate_summary(processed)
+    # TODO: wire up the DAG:
+    # 1. call get_regions() to fetch the list
+    # 2. use .expand() on process_region to create one task per region
+    # 3. pass all the results into generate_summary()
 
 
 # Instantiate the DAG

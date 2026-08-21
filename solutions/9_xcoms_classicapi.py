@@ -4,21 +4,16 @@ from airflow import DAG
 from airflow.providers.standard.operators.python import PythonOperator
 
 """
-Exercise 9: XComs and Dynamic Task Mapping
+Exercise 9 (Classical API): XComs and Dynamic Task Mapping
 
-This DAG uses the classical API (DAG() context manager + PythonOperator)
-with .expand() for true dynamic task mapping. The number of regions is
-determined at runtime, not hardcoded!
+This version uses .expand() with PythonOperator for true dynamic task mapping.
+The number of regions is determined at runtime, not hardcoded!
 
-Key concepts demonstrated here:
+Key concepts:
 1. DAG() context manager instead of @dag decorator
 2. PythonOperator with .expand() for dynamic mapping
-3. Return values automatically pushed to XCom, pulled via .output
-4. op_args expansion for dynamic inputs
-
-Your task: open `9_xcoms_taskflowapi.py` and rewrite this same pipeline
-using the TaskFlow API (@dag / @task decorators) instead. This file is
-your reference for what the pipeline should do.
+3. Explicit xcom_push() and xcom_pull() for data passing
+4. op_args/op_kwargs expansion for dynamic inputs
 """
 
 
@@ -69,12 +64,12 @@ def generate_summary(results):
 
 
 with DAG(
-    dag_id="9_classical_api",
+    dag_id="solution_9_classical_api",
     description="Classical API with dynamic task mapping",
     schedule="@daily",
     start_date=dt.datetime(2025, 1, 1),
     catchup=False,
-    tags=["exercise", "classical", "xcom", "dynamic"],
+    tags=["solution", "classical", "xcom", "dynamic"],
 ) as dag:
 
     get_regions_task = PythonOperator(
