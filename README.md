@@ -1,5 +1,7 @@
 # Orchestrating work with Apache Airflow
 
+[![Dataminded Academy](https://raw.githubusercontent.com/datamindedacademy/branding/main/assets/badge.svg)](https://github.com/datamindedacademy)
+
 ## Repository description
 
 This code repository contains exercises that go with the [Data Minded
