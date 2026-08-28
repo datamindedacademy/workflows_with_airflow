@@ -1,0 +1,110 @@
+:root {
+  /* Primary palette */
+  --dm-premium: #080635;
+  --dm-connecting: #543edc;
+  --dm-authentic: #e9edff;
+
+  /* Secondary palette (traffic-lights, charts, accents) */
+  --dm-green: #8fdb3d;
+  --dm-yellow: #ffd55b;
+  --dm-coral: #fc6b51;
+  --dm-magenta: #ba3ddb;
+  --dm-lilac: #cacdf9;
+  --dm-space: #36288f;
+
+  /* Neutral surface used for content cards/boxes in the real template */
+  --dm-surface: #f2f2f4;
+
+  --slidev-theme-primary: var(--dm-connecting);
+}
+
+/* Typography ------------------------------------------------------------- */
+.slidev-layout {
+  font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--dm-premium);
+}
+
+.slidev-layout h1,
+.slidev-layout h2,
+.slidev-layout h3,
+.slidev-layout .dm-title {
+  font-family: 'El Messiri', ui-serif, Georgia, serif;
+  font-weight: 700;
+  color: var(--dm-premium);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.slidev-layout h1 { font-size: 34px; }
+.slidev-layout h2 { font-size: 26px; }
+.slidev-layout h3 { font-size: 20px; }
+
+/* Two-tone heading accent word */
+.dm-accent { color: var(--dm-connecting); }
+
+/* Small uppercase eyebrow label */
+.dm-eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dm-connecting);
+}
+
+/* Content-page title with the signature thin full-width rule beneath it.
+   Applied by the default layout; the h1 sits above a hairline divider. */
+.dm-head {
+  border-bottom: 1px solid rgba(8, 6, 53, 0.85);
+  padding-bottom: 12px;
+  margin-bottom: 32px;
+}
+.dm-head :deep(h1),
+.dm-head h1 { font-size: 34px; }
+
+/* Top-right section label (e.g. "Colour Scheme") */
+.dm-section-label {
+  position: absolute;
+  top: 28px;
+  right: 40px;
+  font-size: 14px;
+  color: var(--dm-premium);
+  opacity: 0.85;
+}
+
+/* Body defaults following the 8pt rhythm */
+.slidev-layout p { margin: 0 0 16px; }
+.slidev-layout ul { margin: 0; padding-left: 22px; list-style: disc; }
+.slidev-layout li { margin-bottom: 8px; }
+.slidev-layout li::marker { color: var(--dm-connecting); }
+.slidev-layout a { color: var(--dm-connecting); }
+.slidev-layout code { color: var(--dm-connecting); }
+
+/* Dark-background helper: any layout with .dm-dark flips text to light */
+.slidev-layout.dm-dark,
+.slidev-layout.dm-dark h1,
+.slidev-layout.dm-dark h2,
+.slidev-layout.dm-dark h3 {
+  color: #ffffff;
+}
+.slidev-layout.dm-dark .dm-accent { color: #b3a7f2; }
+
+/* Full-bleed real background image, used by chrome layouts.
+   It is absolutely positioned at z-index 0, so content wrappers must sit above it. */
+.dm-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+}
+/* Static centred content on dark layouts must paint above the background image */
+.dm-section-title,
+.dm-quote-body,
+.dm-statement-body,
+.dm-thanks-body {
+  position: relative;
+  z-index: 1;
+}

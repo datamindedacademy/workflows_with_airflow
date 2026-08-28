@@ -1,0 +1,51 @@
+/* Slidev 0.50 parks the "go to slide" dialog off-screen (`-top-20`) when it is closed,
+   but its autocomplete list keeps rendering and hangs down over the slide as a list of
+   every slide title. Hide the list while the dialog is parked; pressing "g" still works. */
+#slidev-goto-dialog[class*="-top-20"] .autocomplete-list {
+  display: none;
+}
+
+/* Nine agenda rows have to fit on one page; the theme's default row height fits five. */
+.dm-agenda-body ol > li {
+  padding: 6px 4px !important;
+  font-size: 15px !important;
+}
+
+/* The recap list: UnoCSS's reset strips list markers, so put the numbers back. */
+.dm-recap ol { list-style: decimal; padding-left: 26px; font-size: 18px; }
+.dm-recap li { margin-bottom: 10px; padding-left: 4px; }
+.dm-recap ul { list-style: disc; padding-left: 22px; margin-top: 6px; }
+.dm-recap ul li { margin-bottom: 4px; font-size: 17px; }
+
+/* Simple hairline-bordered comparison table, used for operator/config comparisons. */
+.dm-table { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 16px; }
+.dm-table th, .dm-table td {
+  border-bottom: 1px solid rgba(84, 62, 220, 0.35);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+.dm-table th { color: var(--dm-connecting); font-weight: 700; }
+
+/* Cron mnemonic box: monospace grid with the five field columns called out. */
+.cron-box {
+  background: var(--dm-surface);
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* Exercise-pointer badge used inside statement layout to show the folder path. */
+.exercise-path {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  font-family: ui-monospace, monospace;
+  font-size: 16px;
+}
