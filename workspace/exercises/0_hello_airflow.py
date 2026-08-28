@@ -5,11 +5,15 @@ from airflow.providers.standard.operators.smooth import SmoothOperator
 
 
 """
-Exercise 0
+Exercise 0: Your first DAG
 
 Test your first Airflow Deployment!
 
-Copy this file to /workflows-with-airflow/workspace/mount/dags and wait or refresh your Airflow UI!
+You'll practice: the DAG object, operators, task dependencies, and
+deploying a DAG file.
+
+Copy this file to /workflows-with-airflow/workspace/mount/dags and wait
+or refresh your Airflow UI!
 
 """
 

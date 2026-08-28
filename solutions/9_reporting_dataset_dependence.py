@@ -4,19 +4,19 @@ from airflow.providers.standard.operators.empty import EmptyOperator
 from airflow.datasets import Dataset
 
 """
-Exercise 7
+Exercise 9 solution: Cross-DAG dependencies: datasets
 
-We've built another DAG to create a report every time our data is updated.
-Here we use a Dataset dependency instead of a sensor.
-
-However, the dependency is not working correctly. Do you see what's wrong?
+`reporting_dag` was missing a `schedule` entirely, so it never ran.
+Setting `schedule=[data_ready]` makes it schedule-on-dataset: a new run
+is queued whenever `processing_dag`'s `done` task updates the
+`data_ready` dataset via its `outlets`.
 """
 
 data_ready = Dataset("s3://bucket_name/ingress/processed.csv")
 
 # Processing DAG - produces the dataset
 processing_dag = DAG(
-    dag_id="solution_7_processing_pipeline",
+    dag_id="solution_9_processing_pipeline",
     description="Processes and stores data",
     default_args={"owner": "Processing Team"},
     schedule="@daily",
@@ -31,7 +31,7 @@ with processing_dag:
 
 # Reporting DAG - scheduled to run when the dataset is updated
 reporting_dag = DAG(
-    dag_id="solution_7_reporting_pipeline",
+    dag_id="solution_9_reporting_pipeline",
     description="Generates and sends reports",
     default_args={"owner": "Reporting Team"},
     # No explicit schedule, this DAG is triggered by dataset update

@@ -4,19 +4,25 @@ from airflow.providers.standard.operators.empty import EmptyOperator
 from airflow.datasets import Dataset
 
 """
-Exercise 7
+Exercise 9: Cross-DAG dependencies: datasets
 
-We've built another DAG to create a report every time our data is updated.
-Here we use a Dataset dependency instead of a sensor.
+We've built another DAG to create a report every time our data is
+updated. Here we use a Dataset dependency instead of a sensor.
 
-However, the dependency is not working correctly. Do you see what's wrong?
+You'll practice: event-driven, data-aware scheduling via
+`Dataset`/outlets -- a DAG that reacts to data becoming available, in
+contrast to every earlier exercise's interval-based `schedule=`
+cron/preset.
+
+However, the dependency is not working correctly. Do you see what's
+wrong?
 """
 
 data_ready = Dataset("s3://bucket_name/ingress/processed.csv")
 
 # Processing DAG - produces the dataset
 processing_dag = DAG(
-    dag_id="7_processing_pipeline",
+    dag_id="9_processing_pipeline",
     description="Processes and stores data",
     default_args={"owner": "Processing Team"},
     schedule="@daily",
@@ -31,7 +37,7 @@ with processing_dag:
 
 # Reporting DAG - scheduled to run when the dataset is updated
 reporting_dag = DAG(
-    dag_id="7_solution_reporting_pipeline",
+    dag_id="9_solution_reporting_pipeline",
     description="Generates and sends reports",
     default_args={"owner": "Reporting Team"},
     start_date=dt.datetime(2025, 1, 1),

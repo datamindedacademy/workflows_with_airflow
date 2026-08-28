@@ -7,17 +7,16 @@ from airflow.utils.task_group import TaskGroup
 from airflow.utils.trigger_rule import TriggerRule
 
 """
-Exercise 4
+Exercise 6 solution (bonus): Trigger rules
 
-Can you modify this DAG in such a way that downstream tasks (e, f, g, h)
-will still start, even when the upstream task 'd' failed?
-
-BONUS: Can you make it so that downstream tasks will only run if at least one upstream task has succeeded,
-but not if all upstream tasks failed?
+Extends the base fix with an `at_least_one_success` TaskGroup: an
+ALL_DONE gate and a ONE_SUCCESS gate both feed into a final ALL_SUCCESS
+task, so downstream work only runs when at least one upstream task
+succeeded -- not when every upstream task failed.
 """
 
 dag = DAG(
-    dag_id="solution_4_failing_tasks_bonus",
+    dag_id="solution_6_failing_tasks_bonus",
     description="failing tasks",
     default_args={"owner": "Airflow"},
     schedule="@daily",

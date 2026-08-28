@@ -5,17 +5,17 @@ from airflow.providers.standard.operators.empty import EmptyOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 
 """
-Exercise 6
+Exercise 8 solution: Cross-DAG dependencies: sensors
 
-We've built a DAG to create a report at 6 AM, based on data generated at midnight.
-A sensor is used to check that the data processing was successful 
-(we don't want to generate a report on incomplete data).
-
-However, the sensor is not working correctly. Do you see what's wrong?
+Adds `execution_delta=dt.timedelta(hours=6)` to the sensor:
+`reporting_dag`'s schedule ("0 6 * * *") starts its data interval 6
+hours after `processing_dag`'s ("@daily", midnight), so without the
+delta the sensor was looking for an upstream run that doesn't exist at
+that logical date.
 """
 
 processing_dag = DAG(
-    dag_id="6_processing_pipeline",
+    dag_id="solution_8_processing_pipeline",
     description="Processes and stores data",
     default_args={"owner": "Processing Team"},
     schedule="@daily",
@@ -24,7 +24,7 @@ processing_dag = DAG(
 )
 
 reporting_dag = DAG(
-    dag_id="6_reporting_pipeline",
+    dag_id="solution_8_reporting_pipeline",
     description="Generates and sends reports",
     default_args={"owner": "Reporting Team"},
     schedule="0 6 * * *",
@@ -39,9 +39,10 @@ with processing_dag:
 
 with reporting_dag:
     sensor = ExternalTaskSensor(
-        task_id="6_processing_done",
-        external_dag_id="6_processing_pipeline",
+        task_id="processing_done",
+        external_dag_id="solution_8_processing_pipeline",
         external_task_id="done",
+        execution_delta=dt.timedelta(hours=6),
     )
 
     report = EmptyOperator(task_id="generate_report")

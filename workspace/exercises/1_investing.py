@@ -4,10 +4,14 @@ import pandas as pd
 from airflow import DAG
 
 """
-Exercise 1
+Exercise 1: Top-level code cost
 
-This DAG seems to take a long time to load.
-(Have a look at the scheduler logs if you're unsure about this: run `docker compose logs -f airflow-scheduler`)
+This DAG seems to take a long time to load. (Have a look at the
+scheduler logs if you're unsure about this: run `docker compose logs -f
+airflow-scheduler`)
+
+You'll practice: understanding DAG-file parsing cost, and why heavy work
+at import time slows down the scheduler.
 
 Can you figure out why, and how to fix it?
 """

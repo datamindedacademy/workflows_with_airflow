@@ -5,9 +5,13 @@ import dateutil
 from pendulum import datetime
 
 """
-Exercise 2.5
+Exercise 3 solution (pure Python variant): Templating with Jinja
 
-Extend your previous result to also print your age.
+Instead of a Jinja template string, this version requests `dag` and
+`data_interval_end` as parameters on the callable -- Airflow injects
+them automatically because a PythonOperator resolves any parameter name
+that matches a context key -- and computes the age directly in Python
+using `dateutil.relativedelta`.
 """
 
 
@@ -16,7 +20,7 @@ MY_BIRTHDAY = datetime(year=1961, month=8, day=4, tz="Pacific/Honolulu")
 
 
 dag = DAG(
-    dag_id="solution_2_happy_birthday_python_v3",
+    dag_id="solution_3_happy_birthday_python_v3",
     description="Wishes you a happy birthday",
     default_args={"owner": "Airflow"},
     schedule="0 13 8 5 *",

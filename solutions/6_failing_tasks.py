@@ -7,18 +7,16 @@ from airflow.providers.standard.operators.empty import EmptyOperator
 from airflow.utils.trigger_rule import TriggerRule
 
 """
-Exercise 4
+Exercise 6 solution: Trigger rules
 
-Can you modify this DAG in such a way that downstream tasks (e, f, g, h)
-will still start, even when the upstream task 'd' failed?
-
-BONUS: Can you make it so that downstream tasks will only run 
-if at least one upstream task has succeeded,
-but not if all upstream tasks failed?
+An EmptyOperator "join" task with `trigger_rule=TriggerRule.ALL_DONE`
+sits between the upstream tasks and e-h, so a failure in `task_d` no
+longer blocks the whole right-hand side -- `ALL_DONE` fires regardless
+of whether upstream tasks succeeded or failed.
 """
 
 dag = DAG(
-    dag_id="solution_4_failing_tasks",
+    dag_id="solution_6_failing_tasks",
     description="failing tasks",
     default_args={"owner": "Airflow"},
     schedule="@daily",
