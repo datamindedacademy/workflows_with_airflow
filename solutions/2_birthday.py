@@ -1,5 +1,4 @@
-import datetime as dt
-
+import pendulum
 from airflow import DAG
 from airflow.providers.standard.operators.bash import BashOperator
 
@@ -13,7 +12,7 @@ regardless of `start_date` -- it does not run on the anniversary of
 """
 
 MY_NAME = "Barack Obama"
-MY_BIRTHDAY = dt.datetime(year=1961, month=8, day=4)
+MY_BIRTHDAY = pendulum.datetime(1961, 8, 4, tz="Pacific/Honolulu")
 
 dag = DAG(
     dag_id="solution_2_happy_birthday_v1",

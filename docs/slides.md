@@ -93,20 +93,31 @@ layout: default
 label: 1 · Orchestration
 ---
 
-## What is Airflow?
+# What is Airflow, and <span class="dm-accent">why?</span>
 
-- A workflow scheduler, originally built at Airbnb, now mostly maintained by Astronomer.
+<div class="mt-4">
 
-## Why Airflow?
+A workflow scheduler for batch jobs, originally built at Airbnb, now mostly maintained by Astronomer. **Airflow 3** is the current major version — this course runs 3.1.
 
-- Open-source workflow automation of batch jobs
-- Write workflows as code in Python, leveraging its rich ecosystem
-- Automate multi-step processes
-- Large community, easy to find information
-- Easily extend functionality with custom plugins; many operations are already supported
-- Built-in operators for Hadoop, Spark, SQL, and more
-- Maintained via version control
-- Deployed using CI/CD pipelines
+</div>
+
+<DmColumns class="mt-6" :gap="16">
+<DmColumn tone="plain">
+
+- Open-source automation of batch workflows
+- Workflows are **Python code**, with its whole ecosystem available
+- Kept in version control, deployed through CI/CD
+- Extend it with your own operators, hooks and plugins
+
+</DmColumn>
+<DmColumn tone="plain" divider>
+
+- Ready-made operators for Spark, SQL, Kubernetes, the big clouds, …
+- A large community, so most problems are already answered somewhere
+- A UI that tells you what ran, what failed, and how long it took
+
+</DmColumn>
+</DmColumns>
 
 ---
 layout: cards
@@ -149,6 +160,8 @@ Open-source, container-native workflow engine as a Kubernetes CRD.
 
 </DmCard>
 </template>
+
+<p class="mt-6 text-center">Airflow 3 closed much of this gap — <b>Assets</b> answer software-defined assets, and the <b>Task SDK</b> answers the developer-experience critique. Also worth knowing: Kestra, Temporal, Flyte.</p>
 
 ---
 layout: statement
@@ -350,26 +363,28 @@ layout: default
 label: 2 · Architecture
 ---
 
-# Scheduler, executor, workers, <span class="dm-accent">metadata DB</span>
+# The components you actually <span class="dm-accent">deploy</span>
 
-<DmColumns class="mt-4" :gap="20">
-<DmColumn tone="plain" class="col-w1">
+<DmColumns class="mt-4" :gap="16">
+<DmColumn tone="plain">
 
-<img src="/img/airflow-architecture.png" alt="Airflow architecture: the user interface talks to the webserver, the scheduler and its executor delegate work to the workers, and everything shares the metadata database and the DAG directory" style="width: 100%; object-fit: contain" />
+- **API server** — serves the REST API *and* the UI. Called the *webserver* in Airflow 2
+- **DAG processor** — parses your DAG files. A **required, standalone** process in Airflow 3, so the scheduler never touches your code
+- **Scheduler** — decides which task instances may run, and hands them to the executor
 
 </DmColumn>
-<DmColumn tone="plain" divider class="col-w1">
+<DmColumn tone="plain" divider>
 
-- **Scheduler** — stays in sync with the DAG folder, inspects active tasks and decides what may run
-- **Executor** — the system that starts workers: Local, Celery, Kubernetes
-- **Workers** — subprocesses that actually run the tasks, possibly on other machines
-- **Metadata database** — preserves state: task status, runtime, configuration, …
+- **Executor** — starts workers: Local, Celery, Kubernetes, Edge
+- **Workers** — run the tasks, possibly on other machines
+- **Triggerer** — *optional*; runs deferred tasks in an asyncio loop (see section 9)
+- **Metadata database** — task status, runtime, configuration, …
 
 </DmColumn>
 </DmColumns>
 
-<DmBanner tone="authentic" icon="i-mdi-alert-outline" class="mt-4">
-Do not let the scheduler do any time-consuming processing. It runs your job one <code>schedule_interval</code> <b>after</b> the <code>start_date</code>, at the end of the period.
+<DmBanner tone="authentic" icon="i-mdi-alert-outline" class="mt-6">
+Keep the DAG processor cheap. It re-parses every DAG file on a loop, so anything expensive at the top level of your file is paid over and over — see exercise 1.
 </DmBanner>
 
 <!--
@@ -388,24 +403,29 @@ layout: default
 label: 2 · Architecture
 ---
 
-# You author workflows in the DAGs <span class="dm-accent">folder</span>
+# Which of those you actually <span class="dm-accent">touch</span>
 
-<DmColumns class="mt-4" :gap="20">
-<DmColumn tone="plain" class="col-w1">
+<DmColumns class="mt-6" :gap="16">
+<DmColumn header="Authoring" tone="navy">
 
-<img src="/img/airflow-architecture.png" alt="The same architecture diagram, highlighting that authors write to the DAG directory while operators watch the user interface" style="width: 100%; object-fit: contain" />
+Write Python files into the **DAG bundle** — for us, a folder; in production usually a git repository the DAG processor syncs.
 
 </DmColumn>
-<DmColumn tone="plain" divider class="col-w1">
+<DmColumn header="Operating" tone="violet" divider>
 
-- **Create / modify workflows** → write Python files into the DAG directory
-- **Monitoring / operations** → the web UI, driven by the metadata database
-- **Internals** — scheduler, executor, workers — you rarely touch these directly
+The **UI**, served by the API server and backed by the metadata database. Trigger, inspect, clear, backfill.
+
+</DmColumn>
+<DmColumn header="Rarely" tone="navy" divider>
+
+Scheduler, executor and workers are infrastructure. The CLI and scheduler logs are for when something is genuinely wrong.
 
 </DmColumn>
 </DmColumns>
 
-<p class="mt-6 text-lg">On rare occasions you'd use the Airflow CLI, or inspect the scheduler logs directly.</p>
+<DmBanner tone="violet" icon="i-mdi-source-branch" class="mt-8">
+Airflow 3 tracks the <b>version</b> of the DAG each run used. A run finishes against the code it started with, even if you deploy mid-run — and the UI shows you which version that was.
+</DmBanner>
 
 ---
 layout: section
@@ -438,7 +458,7 @@ layout: default
 label: 3 · The web UI
 ---
 
-# Web UI: grid view <span class="dm-accent">(replaces the tree view)</span>
+# Web UI: grid <span class="dm-accent">view</span>
 
 <div class="flex justify-center mt-4">
 <img src="/img/webui-grid.png" alt="Airflow grid view" style="height: 380px; object-fit: contain" />
@@ -494,7 +514,7 @@ label: 3 · The web UI
 
 <div class="mt-4">
 
-A read-only view on the code behind the workflow. Good for checking what is actually deployed right now.
+A read-only view on the code behind the workflow — and in Airflow 3, on the **exact version each run used**, since a run completes against the code it started with.
 
 </div>
 
@@ -534,12 +554,12 @@ label: 4 · Building a DAG
 <DmColumn tone="plain" divider class="col-w1">
 
 ```python
-BashOperator(
-    task_id="example",
-    dag=dag,
-    bash_command="date",
-    trigger_rule="all_success",
-)
+with DAG(dag_id="example", ...):
+    BashOperator(
+        task_id="example",
+        bash_command="date",
+        trigger_rule="all_success",
+    )
 ```
 
 </DmColumn>
@@ -556,7 +576,7 @@ label: 4 · Building a DAG
 with DAG(
     dag_id="reporting",
     schedule="@daily",
-    start_date=pendulum.datetime(2024, 1, 1, tz="Europe/Brussels"),
+    start_date=pendulum.datetime(2026, 1, 1, tz="Europe/Brussels"),
     default_args={"retries": 1},  # passed to every operator, overridable per task
 ) as dag:
     retrieve = PythonOperator(task_id="retrieve", python_callable=retrieve_file)
@@ -580,7 +600,8 @@ label: 4 · Building a DAG
 # The Python Operator executes a Python callable on a <span class="dm-accent">worker</span>
 
 ```python
-from airflow import DAG
+import pendulum
+from airflow.sdk import DAG
 from airflow.providers.standard.operators.python import PythonOperator
 
 def say_hello():
@@ -588,22 +609,24 @@ def say_hello():
     return "this goes to xcom"
 
 with DAG(
-    dag_id='hello_airflow',
-    schedule="@daily",  # Adjust as needed
-    start_date='2026-01-01'
+    dag_id="hello_airflow",
+    schedule="@daily",
+    start_date=pendulum.datetime(2026, 1, 1, tz="Europe/Brussels"),
 ) as dag:
     task = PythonOperator(
         task_id="hello_world",
-        python_callable=say_hello
+        python_callable=say_hello,
     )
 ```
+
+<p class="mt-4"><code>airflow.sdk</code> is the Airflow 3 public interface — the Task SDK. It is what workers get, and it is where <code>DAG</code>, <code>task</code>, <code>chain</code>, <code>Asset</code> and friends now live.</p>
 
 ---
 layout: default
 label: 4 · Building a DAG
 ---
 
-<h1 class="tf-title">We recommend the PythonOperator over the <span class="dm-accent">TaskFlow API</span></h1>
+<h1 class="tf-title">Two ways to write the same task: pick one, stay <span class="dm-accent">consistent</span></h1>
 
 <DmColumns class="mt-1 code-compare" :gap="16">
 <DmColumn header="Classic: PythonOperator" tone="navy">
@@ -623,7 +646,7 @@ with DAG(dag_id="example") as dag:
 <DmColumn header="TaskFlow API" tone="violet" divider>
 
 ```python
-from airflow.decorators import dag, task
+from airflow.sdk import dag, task
 
 @dag(dag_id="example")
 def example():
@@ -639,16 +662,15 @@ example()
 </DmColumn>
 </DmColumns>
 
-<DmBanner tone="authentic" icon="i-mdi-thought-bubble-outline" title="🤔 The docs disagree with us" class="mt-1 tf-banner">
-Proceed with the TaskFlow API when you're aware of the consequences — and your teammates' abilities.
+<DmBanner tone="authentic" icon="i-mdi-scale-balance" title="It is a trade-off, not a right answer" class="mt-1 tf-banner">
+Mixing both in one repository is the only choice that is clearly wrong.
 </DmBanner>
 
 <div class="mt-1 tf-bullets">
 
-- Decorators (the `@some_func`) are not beginner friendly
-- Style break: mixing a `PythonOperator` created via decorator with other operators means they don't look the same
-- Confusing: the function call on the last line (`extract()`) makes it look like a function will be executed by the scheduler, which is not quite the case
-- Non-trivial Python code should be packaged and deployed outside of Airflow DAG files
+- **For TaskFlow:** far less boilerplate; XComs are just return values and arguments; `.expand()` for dynamic mapping reads naturally; it is where Airflow 3's Task SDK is heading, and what the docs recommend
+- **Against:** decorators are not beginner friendly; it looks unlike your other operators, so a mixed DAG reads inconsistently; the bare `extract()` on the last line suggests the scheduler runs your function, which is not what happens
+- **Either way:** non-trivial Python belongs in a package you import, not in the DAG file
 
 </div>
 
@@ -657,13 +679,13 @@ layout: default
 label: 4 · Building a DAG
 ---
 
-# The Airflow docs recommend the <span class="dm-accent">opposite</span>
+# For the record, the docs have a <span class="dm-accent">favourite</span>
 
 <div class="flex justify-center mt-4">
 <img src="/img/docs-taskflow-warning.png" alt="Screenshot of the Airflow documentation warning that the @task decorator is recommended over the classic PythonOperator" style="height: 300px; object-fit: contain" />
 </div>
 
-<p class="mt-4 text-lg">Know the recommendation, then make a deliberate team decision — and stick to it within one repository.</p>
+<p class="mt-4 text-lg">This course uses the classic operator in most exercises because it makes the machinery visible — exercise 10 gives you both. Once you know what a decorator hides, choose deliberately for your own team.</p>
 
 ---
 layout: statement
@@ -698,7 +720,7 @@ label: 5 · Scheduling
 <tr><td>Presets</td><td><code>None</code>, <code>@once</code>, <code>@hourly</code>, <code>@daily</code>, <code>@weekly</code>, <code>@monthly</code>, <code>@yearly</code></td></tr>
 <tr><td>Cron syntax</td><td><code>*/5 1,2 * * *</code></td></tr>
 <tr><td><code>datetime.timedelta</code></td><td><code>datetime.timedelta(days=4)</code></td></tr>
-<tr><td>Timetable</td><td>an explicit list of dates, defined in Python</td></tr>
+<tr><td>Timetable</td><td>a schedule object — the only way to get a <b>data interval</b>, or a fully custom calendar</td></tr>
 <tr><td>Asset</td><td>each time another process updates an Asset</td></tr>
 </tbody>
 </table>
@@ -721,25 +743,6 @@ label: 5 · Scheduling
 
 </DmColumn>
 </DmColumns>
-
----
-layout: default
-label: 5 · Scheduling
----
-
-# Scheduled DAG runs happen after the date interval <span class="dm-accent">ends</span>
-
-<div class="flex justify-center mt-4">
-<img src="/img/date-interval-timeline.png" alt="Timeline showing the start date, previous, current and next intervals, with the execution date sitting at the start of the current interval" style="width: 92%; object-fit: contain" />
-</div>
-
-<div class="mt-6">
-
-- Each DAG run has a **date interval** that represents the time range it operates in
-- A DAG run is scheduled **after** its date interval has ended, so it can collect all the data within that period
-- The **execution date** of a DAG run denotes the *start* of the date interval, not when the DAG actually runs
-
-</div>
 
 ---
 layout: default
@@ -783,7 +786,7 @@ a different tool/framework — that's near-real-time event processing (Kafka/Fli
 A cron job can't run "every 5 days" → use datetime.timedelta. Time has to be divisible by 5.
 Timetables: complex, usually not needed — used when you can't regularly run your DAG (e.g. at
 sunrise, which changes every day); refer to docs, defined in Python code.
-Datasets: whenever a dataset changes.
+Assets: whenever an asset is updated by a producing task.
 -->
 
 ---
@@ -791,11 +794,42 @@ layout: default
 label: 5 · Scheduling
 ---
 
-# `@yearly` does not fire on the date you had in <span class="dm-accent">mind</span>
+# In Airflow 3, a cron schedule fires <span class="dm-accent">at</span> the cron time
 
 <div class="mt-4">
 
-Say you want a birthday DAG for someone born on **1987-08-03**, and you write:
+Give `schedule` a cron string or a preset and you get a **`CronTriggerTimetable`**: the run fires the moment the cron expression matches. There is no window — `data_interval_start`, `data_interval_end` and `logical_date` are all the same instant.
+
+</div>
+
+```python
+with DAG(dag_id="birthday", schedule="0 0 3 8 *",     # Mi Ho Da Mo We → 00:00 on 3 August
+         start_date=pendulum.datetime(1987, 8, 3, tz="Europe/Brussels")):
+    ...
+```
+
+<table class="dm-table mt-4">
+<thead><tr><th>Run fires at</th><th><code>logical_date</code></th><th><code v-pre>{{ ds }}</code></th></tr></thead>
+<tbody>
+<tr><td>1987-08-03 00:00</td><td>1987-08-03 00:00</td><td>1987-08-03</td></tr>
+<tr><td>1988-08-03 00:00</td><td>1988-08-03 00:00</td><td>1988-08-03</td></tr>
+</tbody>
+</table>
+
+<DmBanner tone="violet" icon="i-mdi-alert-decagram-outline" class="mt-6">
+This changed in Airflow 3: <code>create_cron_data_intervals</code> now defaults to <code>False</code>. In Airflow 2 the same DAG fired a year <b>later</b>, at the end of an interval.
+</DmBanner>
+
+---
+layout: default
+label: 5 · Scheduling
+---
+
+# Presets align to the calendar unit, not to your <span class="dm-accent">start_date</span>
+
+<div class="mt-4">
+
+Say you want a birthday DAG for someone born on **1987-08-03**, and you reach for `@yearly`:
 
 </div>
 
@@ -806,15 +840,15 @@ with DAG(dag_id="birthday", schedule="@yearly",
 ```
 
 <table class="dm-table mt-4">
-<thead><tr><th></th><th>What you meant</th><th>What <code>@yearly</code> does</th></tr></thead>
+<thead><tr><th></th><th><code>@yearly</code></th><th><code>0 0 3 8 *</code></th></tr></thead>
 <tbody>
-<tr><td><b>Interval</b></td><td>03 Aug → 03 Aug</td><td>01 Jan 00:00 → 01 Jan 00:00</td></tr>
-<tr><td><b>First run fires</b></td><td>1988-08-03</td><td>1988-01-01 00:00</td></tr>
+<tr><td><b>Cron it resolves to</b></td><td><code>0 0 1 1 *</code></td><td><code>0 0 3 8 *</code></td></tr>
+<tr><td><b>Fires on</b></td><td>1 January ❌</td><td>3 August ✅</td></tr>
 </tbody>
 </table>
 
 <DmBanner tone="authentic" icon="i-mdi-alert-outline" class="mt-6">
-Presets align to the <b>start of the calendar unit</b>, not to your <code>start_date</code>. <code>@yearly</code> ≡ <code>0 0 1 1 *</code>.
+A preset never looks at your <code>start_date</code> — it only decides when the DAG may <b>start</b> firing. Write the cron out when you need a specific day.
 </DmBanner>
 
 ---
@@ -822,32 +856,35 @@ layout: default
 label: 5 · Scheduling
 ---
 
-# Cron syntax does work — but the run fires at the <span class="dm-accent">end</span> of the interval
+# Summarising a period? Opt in to a data <span class="dm-accent">interval</span>
+
+<div class="mt-4">
+
+Fine for "send the birthday mail". Not enough for "sum yesterday's revenue" — that needs a **window**. Pass a timetable explicitly: the run then fires at the **end** of its interval, with both edges templated.
+
+</div>
 
 ```python
-with DAG(dag_id="birthday", schedule="0 0 3 8 *",  # Mi Ho Da Mo We → 00:00 on 3 August
-         start_date=pendulum.datetime(1987, 8, 3, tz="Europe/Brussels")):
+from airflow.timetables.interval import CronDataIntervalTimetable
+
+with DAG(dag_id="daily_revenue",
+         schedule=CronDataIntervalTimetable("0 0 * * *", "Europe/Brussels"),
+         start_date=pendulum.datetime(2026, 1, 1, tz="Europe/Brussels")):
     ...
 ```
 
-<table class="dm-table mt-4">
-<thead><tr><th>Data interval start (= logical date)</th><th>Data interval end</th><th>Task actually runs</th></tr></thead>
-<tbody>
-<tr><td>1987-08-03 00:00</td><td>1988-08-03 00:00</td><td>1988-08-03 00:00</td></tr>
-<tr><td>1988-08-03 00:00</td><td>1989-08-03 00:00</td><td>1989-08-03 00:00</td></tr>
-</tbody>
-</table>
+<div class="flex justify-center mt-4">
+<img src="/img/date-interval-timeline.png" alt="Timeline showing the start date, previous, current and next intervals, with the logical date sitting at the start of the current interval" style="width: 62%; object-fit: contain" />
+</div>
 
-<DmBanner tone="violet" icon="i-mdi-lightbulb-outline" class="mt-6">
-So <code v-pre>{{ ds }}</code> gives you <b>last</b> year's date. If you want the day the DAG runs, template on <code>data_interval_end</code>.
-</DmBanner>
+<p class="mt-2 text-sm opacity-80">The diagram's <i>execution date</i> is what Airflow 3 calls <code>logical_date</code> — with this timetable it is the interval <b>start</b>, so <code v-pre>{{ ds }}</code> is the day being summarised, not the day the DAG runs.</p>
 
 ---
 layout: default
 label: 5 · Scheduling
 ---
 
-# Unequally sized intervals produce surprising <span class="dm-accent">summaries</span>
+# Careful: intervals are not always the same <span class="dm-accent">length</span>
 
 <DmColumns class="mt-4" :gap="20">
 <DmColumn tone="plain" class="col-w1">
@@ -857,10 +894,10 @@ label: 5 · Scheduling
 </DmColumn>
 <DmColumn tone="plain" divider class="col-w2">
 
-A DAG on `0 0 * * 1-5` (business days only) skips the weekend, so the 5th run's interval is **three days long**, not one:
+Give that timetable a business-day cron — `0 0 * * 1-5` — and the weekend disappears, so Friday's interval is **three days long**:
 
 <table class="dm-table" style="margin-top:10px">
-<thead><tr><th><code v-pre>{{ ds }}</code></th><th><code v-pre>{{ next_ds }}</code></th><th>Span</th></tr></thead>
+<thead><tr><th><code>data_interval_start</code></th><th><code>data_interval_end</code></th><th>Span</th></tr></thead>
 <tbody>
 <tr><td>2020-01-02</td><td>2020-01-03</td><td>1 day</td></tr>
 <tr><td>2020-01-03</td><td>2020-01-06</td><td><b>3 days</b></td></tr>
@@ -870,12 +907,34 @@ A DAG on `0 0 * * 1-5` (business days only) skips the weekend, so the 5th run's 
 </DmColumn>
 </DmColumns>
 
-<p class="mt-6">If you want to report on just the business days, replace <code v-pre>{{ next_ds }}</code> with a macro — or branch with <code>BranchDayOfWeekOperator</code>.</p>
+<p class="mt-6">A query that assumes "one interval = one day" quietly triple-counts every Friday. Always bracket on <code>data_interval_start</code> / <code>data_interval_end</code> rather than on <code v-pre>{{ ds }}</code> plus one day.</p>
 
 <!--
-Want to skip Saturday and Sunday? Use BranchDayOfWeekOperator and check if the day of week is
-Saturday or Sunday.
+Want to skip Saturday and Sunday entirely? Use BranchDayOfWeekOperator and check the day of week.
 -->
+
+---
+layout: default
+label: 5 · Scheduling
+---
+
+# Reading Airflow 2 DAGs: what <span class="dm-accent">changed</span>
+
+<table class="dm-table dm-table--dense mt-4">
+<thead><tr><th>Airflow 2</th><th>Airflow 3</th><th></th></tr></thead>
+<tbody>
+<tr><td><code>schedule_interval=</code></td><td><code>schedule=</code></td><td>renamed</td></tr>
+<tr><td><code>execution_date</code></td><td><code>logical_date</code></td><td>removed from the context</td></tr>
+<tr><td><code v-pre>{{ next_ds }}</code>, <code v-pre>{{ prev_ds }}</code>, <code v-pre>{{ tomorrow_ds }}</code>, …</td><td><code v-pre>{{ data_interval_end | ds }}</code></td><td>removed</td></tr>
+<tr><td><code>logical_date</code> ≡ <code>data_interval_start</code></td><td><code>logical_date</code> ≡ <code>run_after</code></td><td><b>same name, new meaning</b></td></tr>
+<tr><td>cron ⇒ data interval</td><td>cron ⇒ single point in time</td><td><code>create_cron_data_intervals=False</code></td></tr>
+<tr><td><code>catchup=True</code> by default</td><td><code>catchup=False</code> by default</td><td>see next section</td></tr>
+</tbody>
+</table>
+
+<DmBanner tone="authentic" icon="i-mdi-alert-outline" class="mt-6">
+The fourth row is the dangerous one: old DAGs still import and run, but <code>logical_date</code> now means something else. Re-read every date-sensitive task when you migrate.
+</DmBanner>
 
 ---
 layout: statement
@@ -956,23 +1015,27 @@ label: 6 · Templating
 SELECT SUM(amount)
 FROM {{ params.table }}
 WHERE transaction_timestamp
-  BETWEEN '{{ ds }}'
-  AND '{{ data_interval_end.strftime("%Y-%m-%d") }}'
+  BETWEEN '{{ data_interval_start | ds }}'
+  AND '{{ data_interval_end | ds }}'
 ```
 
 </DmColumn>
-<DmColumn header="dags/f_jinja.py" tone="violet" divider>
+<DmColumn header="dags/daily_revenue.py" tone="violet" divider>
 
 ```python
+from airflow.providers.common.sql.operators.sql \
+    import SQLExecuteQueryOperator
+
 with DAG(
-    dag_id="jinja-example",
-    schedule="@daily",
-    start_date=pendulum.datetime(2022, 1, 1,
+    dag_id="daily-revenue",
+    schedule=CronDataIntervalTimetable(
+        "0 0 * * *", "Europe/Brussels"),
+    start_date=pendulum.datetime(2026, 1, 1,
                   tz="Europe/Brussels"),
 ) as dag:
-    revenue = PostgresOperator(
+    revenue = SQLExecuteQueryOperator(
         task_id="query_revenue",
-        postgres_conn_id="postgres_default",
+        conn_id="postgres_default",
         sql="sql/daily_revenue.sql",
         params={"table": "SALES"},
     )
@@ -985,9 +1048,10 @@ with DAG(
 
 <!--
 Jinja templates delay reading a value until task execution: {{ var.value.<variable_name> }}.
-Some templates return Pendulum.datetime objects — convert to strings with filters, e.g.
-{{ data_interval_start | ds }}. Note: {{ params.table }} is not an Airflow template, it's specific
-to the PostgresOperator.
+Some templates return Pendulum.datetime objects — convert to strings with the ds filter, e.g.
+{{ data_interval_start | ds }}. Note: {{ params.table }} is not an Airflow date template, it's the
+operator's own params dict. This DAG needs an explicit CronDataIntervalTimetable: on the Airflow 3
+default a cron schedule has no interval, so start and end would be the same instant.
 -->
 
 ---
@@ -1006,7 +1070,7 @@ PythonOperator(
     python_callable=myprint,
     op_args=[
       "Day of week: "
-      "{{ execution_date.format('dddd') }}",
+      "{{ logical_date.format('dddd') }}",
       "Task id: {{ task_instance.task_id }}",
       "Days since start: {{ macros.dateutil"
       ".relativedelta.relativedelta("
@@ -1062,26 +1126,30 @@ label: 7 · DAG design patterns
 # Catchup and <span class="dm-accent">backfills</span>
 
 <DmColumns class="mt-4" :gap="16">
-<DmColumn header="catchup=True (the default)" tone="navy">
+<DmColumn header="catchup=False — the Airflow 3 default" tone="violet">
 
-On deploy, Airflow schedules **every** interval between `start_date` and now.
+Nothing older than now is scheduled. Deploy a DAG with a `start_date` two years back and you get **one** run, not seven hundred.
 
-- A `start_date` two years back means hundreds of runs queued at once
-- Only safe if your DAG is genuinely idempotent
+- What you want while developing
+- Backfill deliberately, when you mean to
 
 </DmColumn>
-<DmColumn header="catchup=False" tone="violet" divider>
+<DmColumn header="catchup=True — opt in" tone="navy" divider>
 
-Only the most recent interval is scheduled; older ones are skipped.
+On deploy, Airflow schedules **every** missed period between `start_date` and now.
 
-- The usual choice for a DAG you're actively developing
-- Backfill deliberately, via the UI or `airflow dags backfill`
+- Only safe if your DAG is genuinely idempotent
+- Watch `max_active_runs`, or you flood your warehouse
 
 </DmColumn>
 </DmColumns>
 
-<DmBanner tone="authentic" icon="i-mdi-clock-alert-outline" class="mt-6">
-A backfilled run gets the <b>logical date of its interval</b>, not today. Code that calls <code>datetime.now()</code> will quietly produce today's answer for last year's interval.
+<DmBanner tone="violet" icon="i-mdi-alert-decagram-outline" class="mt-4">
+Reversed in Airflow 3: <code>catchup_by_default</code> is now <code>False</code>. Airflow 2 caught up unless you told it not to — a classic first-deploy surprise.
+</DmBanner>
+
+<DmBanner tone="authentic" icon="i-mdi-clock-alert-outline" class="mt-3">
+A backfilled run carries the <b>logical date of the period it stands for</b>, not today. Code that calls <code>datetime.now()</code> quietly produces today's answer for last year's data.
 </DmBanner>
 
 ---
@@ -1099,11 +1167,11 @@ a >> b >> c
 a >> [b, c] >> d
 
 # Cross-downstream: every task in the first list feeds every task in the second
-from airflow.utils.helpers import cross_downstream
+from airflow.sdk import cross_downstream
 cross_downstream([a, b], [c, d, e])
 
 # chain() strings lists together — the one thing >> cannot do
-from airflow.models.baseoperator import chain
+from airflow.sdk import chain
 chain(a, [b, c], [d, e], f)
 ```
 
@@ -1124,6 +1192,8 @@ label: 7 · DAG design patterns
 <DmColumn tone="plain" class="col-w1">
 
 ```python
+from airflow.sdk import TaskGroup
+
 indices = range(1, 6)
 with dag:
     start, middle, end = (
@@ -1158,6 +1228,49 @@ repetition — abstract into TaskGroups. Appears as a single task in Graph View,
 clicking. Doesn't change functionality. E.g. first group is "ingress tables", second could be
 "egress tables".
 -->
+
+---
+layout: default
+label: 7 · DAG design patterns
+---
+
+# When the list is only known at <span class="dm-accent">run time</span>
+
+<DmColumns class="mt-4" :gap="16">
+<DmColumn header="A for-loop is resolved at parse time" tone="navy">
+
+```python
+for table in ["sales", "users"]:
+    PythonOperator(
+        task_id=f"ingest_{table}",
+        python_callable=ingest,
+        op_args=[table],
+    )
+```
+
+The DAG processor must know the list. It cannot depend on anything a task produces.
+
+</DmColumn>
+<DmColumn header="Dynamic task mapping is resolved at run time" tone="violet" divider>
+
+```python
+@task
+def list_tables() -> list[str]: ...
+
+@task
+def ingest(table: str): ...
+
+ingest.expand(table=list_tables())
+```
+
+Airflow creates one mapped task instance per element **after** `list_tables` runs.
+
+</DmColumn>
+</DmColumns>
+
+<DmBanner tone="violet" icon="i-mdi-call-split" class="mt-6">
+Rule of thumb: the list comes from config or code → for-loop. The list comes from a database, an API or a bucket listing → <code>.expand()</code>. Exercise 10 does both.
+</DmBanner>
 
 ---
 layout: statement
@@ -1201,27 +1314,31 @@ label: 8 · Operators & trigger rules
 # Some operators come with Airflow. Others are optional — or <span class="dm-accent">custom</span>
 
 <DmColumns class="mt-4" :gap="16">
-<DmColumn header="Popular core operators" tone="navy">
+<DmColumn header="Standard provider — always there" tone="navy">
+
+`airflow.providers.standard.operators`
 
 - `BashOperator` — executes a bash command
 - `PythonOperator` — calls a Python function
-- `EmailOperator` — sends an email
-- `BranchPythonOperator` — decides the next `task_id`
-- `ShortCircuitOperator` — stops execution based on a condition
+- `BranchPythonOperator` — picks the next `task_id`
+- `ShortCircuitOperator` — stops a branch on a condition
+- `EmptyOperator` — a no-op join / marker
 
 </DmColumn>
-<DmColumn header="Popular provider-package operators" tone="violet" divider>
+<DmColumn header="Other provider packages" tone="violet" divider>
 
-- `SimpleHttpOperator`
-- `SSHOperator` — execute commands on another server
-- `PostgresOperator`
-- `DockerOperator`
-- `LivyOperator`
-- `S3FileTransformOperator`
+- `SQLExecuteQueryOperator` — one operator for every SQL backend
+- `HttpOperator`
+- `SSHOperator` — run commands on another server
+- `DockerOperator`, `KubernetesPodOperator`
 - Many more in the [providers packages listing](https://airflow.apache.org/docs/apache-airflow-providers/)
 
 </DmColumn>
 </DmColumns>
+
+<DmBanner tone="authentic" icon="i-mdi-history" class="mt-4">
+Airflow 3 moved the built-ins into the <b>standard provider</b> and retired the per-database operators (<code>PostgresOperator</code> → <code>SQLExecuteQueryOperator</code>). Old imports simply fail.
+</DmBanner>
 
 <!--
 BranchOperator: possible to run a task in a DAG once every x runs. PythonBranchOperator: the
@@ -1271,7 +1388,7 @@ Depending on externally defined operators to execute logic creates tight couplin
 </div>
 
 <DmBanner tone="authentic" icon="i-mdi-lightbulb-outline" class="mt-6">
-Airflow environments should be lean. Standardize on a limited set of operators suited to generic tasks — containers are a good fit. A task created with <code>SimpleHttpOperator</code> could equally run via <code>BashOperator</code> or <code>PythonOperator</code>. Trade-off: atomicity vs. level of abstraction.
+Airflow environments should be lean. Standardize on a limited set of operators suited to generic tasks — containers are a good fit. A task created with <code>HttpOperator</code> could equally run via <code>BashOperator</code> or <code>PythonOperator</code>. Trade-off: atomicity vs. level of abstraction.
 </DmBanner>
 
 <!--
@@ -1306,7 +1423,7 @@ Optional argument on every operator. By default a task starts once all of its up
 </tbody>
 </table>
 
-<p class="mt-4 text-lg">❤️ Type safety? → <code>airflow.utils.trigger_rule.TriggerRule</code></p>
+<p class="mt-4 text-lg">❤️ Type safety? → <code>from airflow.utils.trigger_rule import TriggerRule</code>, then <code>TriggerRule.ALL_DONE</code>.</p>
 
 <!--
 If you like type safety, replace the strings with class attributes from
@@ -1353,6 +1470,9 @@ label: 9 · Cross-DAG dependencies
 <DmColumn header="Pull: ExternalTaskSensor" tone="navy">
 
 ```python
+from airflow.providers.standard.sensors \
+    .external_task import ExternalTaskSensor
+
 ExternalTaskSensor(
     task_id="wait_for_ingest",
     external_dag_id="ingest",
@@ -1360,12 +1480,15 @@ ExternalTaskSensor(
 )
 ```
 
-A sensor is an operator with a *poke* method: it waits. Needs matching schedules on both DAGs.
+A sensor waits. Needs matching schedules on both DAGs.
 
 </DmColumn>
 <DmColumn header="Push: TriggerDagRunOperator" tone="violet" divider>
 
 ```python
+from airflow.providers.standard.operators \
+    .trigger_dagrun import TriggerDagRunOperator
+
 TriggerDagRunOperator(
     task_id="start_child",
     trigger_dag_id="child",
@@ -1374,19 +1497,103 @@ TriggerDagRunOperator(
 )
 ```
 
-Pushes: with `wait_for_completion`, this task ends when the child does.
+With `wait_for_completion`, this task ends when the child does.
 
 </DmColumn>
 </DmColumns>
 
-<p class="mt-4">Third option in Airflow 3: schedule on an <b>Asset</b> — the producer declares <code>outlets=[…]</code>, the consumer <code>schedule=[…]</code>, and no date alignment is needed.</p>
+<p class="mt-4">Both couple two DAGs by <b>schedule</b>. The third option — Assets — couples them by <b>data</b> instead, and is usually the better answer. Two slides on.</p>
 
 <!--
 TaskSensor is a pull system (you're waiting for something to finish) — needs the external dag_id
 and task_id. TriggerDagRunOperator is a push system, and has a sensor so the task itself finishes
 when the external DAG is finished (wait_for_completion) — needs the name of the external task.
-Possible to pass the execution_date (logical_date) used for the triggered DAG.
+Possible to pass the logical_date used for the triggered DAG.
 -->
+
+---
+layout: default
+label: 9 · Cross-DAG dependencies
+---
+
+# A waiting task should not hold a worker <span class="dm-accent">slot</span>
+
+<DmColumns class="mt-4" :gap="16">
+<DmColumn header="😱 Naive: poke in a loop" tone="navy">
+
+```python
+ExternalTaskSensor(
+    task_id="wait",
+    external_dag_id="ingest",
+)
+```
+
+Occupies a **worker slot** for the whole wait. Sixteen sensors waiting six hours each will deadlock a small cluster.
+
+</DmColumn>
+<DmColumn header="🙂 Deferrable" tone="violet" divider>
+
+```python
+ExternalTaskSensor(
+    task_id="wait",
+    external_dag_id="ingest",
+    deferrable=True,
+)
+```
+
+Releases the slot and hands the wait to the **triggerer**, which polls thousands of these in one asyncio loop.
+
+</DmColumn>
+</DmColumns>
+
+<DmBanner tone="violet" icon="i-mdi-sleep" class="mt-6">
+<code>mode="reschedule"</code> is the older middle ground: the task exits and is re-queued every poke interval. <code>deferrable=True</code> is better where the operator supports it — but it needs a <b>triggerer</b> process running.
+</DmBanner>
+
+<p class="mt-3">Plenty of non-sensor operators take <code>deferrable=True</code> too — anything that mostly sits waiting on a remote system.</p>
+
+---
+layout: default
+label: 9 · Cross-DAG dependencies
+---
+
+# Assets: let the <span class="dm-accent">data</span> trigger the next DAG
+
+<DmColumns class="mt-4" :gap="16">
+<DmColumn header="Producer — declares an outlet" tone="navy">
+
+```python
+from airflow.sdk import Asset
+
+sales = Asset("s3://warehouse/sales")
+
+with DAG(dag_id="ingest", schedule="@daily"):
+    PythonOperator(
+        task_id="load_sales",
+        python_callable=load,
+        outlets=[sales],
+    )
+```
+
+</DmColumn>
+<DmColumn header="Consumer — schedules on it" tone="violet" divider>
+
+```python
+with DAG(dag_id="reporting", schedule=[sales]):
+    PythonOperator(
+        task_id="report",
+        python_callable=build_report,
+    )
+```
+
+Runs when `load_sales` **succeeds**. No cron, no aligned start dates, no sensor holding a slot.
+
+</DmColumn>
+</DmColumns>
+
+<DmBanner tone="violet" icon="i-mdi-graph-outline" class="mt-4">
+Airflow 3 renamed Datasets to <b>Assets</b> and added an <code>@asset</code> decorator plus an Assets view in the UI. An <code>AssetWatcher</code> can trigger on an external message queue — event-driven, with no sensor at all.
+</DmBanner>
 
 ---
 layout: statement
@@ -1401,9 +1608,9 @@ layout: statement
 <p class="exercise-path"><code>8_reporting_sensor</code></p>
 </div>
 <div class="ex-item">
-<p class="ex-name">9 · reporting_dataset_dependence</p>
-<p class="ex-desc">Event-driven scheduling with Datasets and outlets, contrasted with interval-based scheduling</p>
-<p class="exercise-path"><code>9_reporting_dataset_dependence</code></p>
+<p class="ex-name">9 · reporting_asset_dependence</p>
+<p class="ex-desc">Event-driven scheduling with Assets and outlets, contrasted with interval-based scheduling</p>
+<p class="exercise-path"><code>9_reporting_asset_dependence</code></p>
 </div>
 </div>
 
@@ -1508,13 +1715,60 @@ label: 11 · Best practices
 
 <div class="mt-4">
 
-- Don't perform time-consuming operations at the top level. The scheduler shouldn't make database connections, run simulations, or transform tables — put that work in operators
-- **Create idempotent workflows.** You should be able to "time travel" and rerun jobs weeks after their intended trigger moment, as if they ran on the day they had to. Use upserts instead of inserts, or set retries to 0
+- Don't perform time-consuming operations at the top level. The DAG processor shouldn't make database connections, run simulations, or transform tables — put that work in operators
+- **Create idempotent workflows.** You should be able to "time travel" and rerun jobs weeks after their intended trigger moment, as if they ran on the day they had to. Use upserts instead of inserts, and template on the logical date rather than `datetime.now()`
+- Idempotency is what makes **retries** safe. A task that is *not* idempotent is the one that needs `retries=0`
 - Each DAG has an owner / responsible
-- Specify timezone to prevent time-zone issues: `pendulum.datetime(2024, 7, 1).in_tz("Europe/Paris")`
+- Specify timezone to prevent time-zone issues: `pendulum.datetime(2026, 7, 1, tz="Europe/Paris")`
 - Only a very limited amount of data can be shared between operators via XComs — if two operators need to share information, consider combining them into one operator, or communicating via shared files
 
 </div>
+
+---
+layout: default
+label: 11 · Best practices
+---
+
+# Retries, timeouts and telling someone it <span class="dm-accent">broke</span>
+
+<DmColumns class="mt-4" :gap="16">
+<DmColumn tone="plain" class="col-w1">
+
+```python
+from datetime import timedelta
+from airflow.providers.smtp.notifications.smtp \
+    import SmtpNotifier
+
+with DAG(
+    dag_id="reporting",
+    default_args={
+        "retries": 2,
+        "retry_delay": timedelta(minutes=5),
+        "retry_exponential_backoff": True,
+        "execution_timeout": timedelta(hours=1),
+    },
+    on_failure_callback=SmtpNotifier(
+        to="data-team@example.com",
+        subject="[Airflow] {{ dag.dag_id }} failed",
+    ),
+):
+    ...
+```
+
+</DmColumn>
+<DmColumn tone="plain" divider class="col-w1">
+
+- **`retries`** — safe precisely because the task is idempotent. Transient network blips are the common case
+- **`retry_exponential_backoff`** — stop hammering a service that is already struggling
+- **`execution_timeout`** — without it, a hung task waits forever and holds its slot
+- **Notifiers** — `on_failure_callback` takes a notifier object. SMTP, Slack, PagerDuty, … This replaced the old `EmailOperator`, and it fires wherever the failure happens
+
+</DmColumn>
+</DmColumns>
+
+<DmBanner tone="authentic" icon="i-mdi-bell-alert-outline" class="mt-4">
+A DAG nobody is alerted about is a DAG nobody notices has been failing for three weeks.
+</DmBanner>
 
 ---
 layout: default
@@ -1544,8 +1798,8 @@ dag = DAG(
 </DmColumn>
 </DmColumns>
 
-<DmBanner tone="authentic" icon="i-mdi-alert-outline" class="mt-4">
-Tag filters work via browser cookies.
+<DmBanner tone="violet" icon="i-mdi-filter-outline" class="mt-4">
+Filter the DAGs list by tag, then share the URL — the Airflow 3 UI keeps the filter in the query string.
 </DmBanner>
 
 <!--
@@ -1629,12 +1883,18 @@ label: 11 · Best practices
 
 # Managed <span class="dm-accent">Airflow</span>
 
-<div class="dm-logo-row mt-10">
+<div class="dm-logo-row mt-8">
 <div class="dm-logo-item"><img src="/img/logo-mwaa.png" alt="AWS MWAA logo" /><span>MWAA</span></div>
 <div class="dm-logo-item"><img src="/img/logo-astronomer.png" alt="Astronomer logo" /><span>Astronomer</span></div>
 <div class="dm-logo-item"><img src="/img/logo-composer.png" alt="Google Cloud Composer logo" /><span>Composer</span></div>
 <div class="dm-logo-item dm-logo-item--wordmark"><img src="/img/logo-conveyor.png" alt="Conveyor logo" /></div>
 </div>
+
+<p class="mt-8">Managed means someone else runs the scheduler, the database and the upgrades — you still write the DAGs.</p>
+
+<DmBanner tone="authentic" icon="i-mdi-tag-check-outline" class="mt-4">
+The question to ask any of them in 2026: <b>which Airflow version do you actually offer, and how long after an upstream release?</b> Airflow 3 was a major migration, and the managed offerings did not all arrive at once.
+</DmBanner>
 
 ---
 layout: section
@@ -1690,27 +1950,29 @@ label: 12 · Wrap-up
 # Airflow: what's <span class="dm-accent">next?</span>
 
 <DmColumns class="mt-4" :gap="16">
-<DmColumn tone="plain">
+<DmColumn header="Go deeper on what we covered" tone="navy">
 
-- Custom operators and hooks: write your own, or run hooks on retry/exit
-- Hosting Airflow: cloud vs. self-hosted; LocalExecutor vs. CeleryExecutor vs. KubernetesExecutor
-- CI/CD deployment
-- Airflow testing and DAG validation
+- `dag.test()` — run a whole DAG in one Python process, no scheduler, straight in your debugger
+- Custom operators and hooks
+- Testing and DAG validation in CI
+- Dynamic DAG creation, e.g. from YAML
 
 </DmColumn>
-<DmColumn tone="plain" divider>
+<DmColumn header="Newer Airflow 3 ground" tone="violet" divider>
 
-- Managing secrets
-- Monitoring
-- Data governance / publishing lineage
-- Dynamic DAG creation, e.g. from YAML files
+- **Human-in-the-loop** (3.1) — approve, reject or pick a branch mid-run
+- **`@asset`** and asset watchers for event-driven pipelines
+- **DAG versioning** and DAG bundles
+- Edge executor, and multi-team deployments
 
 </DmColumn>
 </DmColumns>
 
-<div class="mt-10">
+<p class="mt-6">Plus the operational half: hosting and executors, CI/CD, secrets, monitoring, lineage.</p>
 
-**Further reading** — <a href="https://medium.com/datamindedbe/cross-dag-dependencies-in-apache-airflow-a-comprehensive-guide-88cbc0bc68d0">Cross-DAG dependencies in Apache Airflow: a comprehensive guide</a>, Frederic Vanderveken, on the Data Minded blog.
+<div class="mt-4">
+
+**Further reading** — <a href="https://medium.com/datamindedbe/cross-dag-dependencies-in-apache-airflow-a-comprehensive-guide-88cbc0bc68d0">Cross-DAG dependencies in Apache Airflow: a comprehensive guide</a>, Frederic Vanderveken, Data Minded blog. Written pre-Airflow 3, so read it alongside the Assets slide.
 
 </div>
 

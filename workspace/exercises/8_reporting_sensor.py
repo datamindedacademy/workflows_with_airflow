@@ -2,7 +2,7 @@ import datetime as dt
 
 from airflow import DAG
 from airflow.providers.standard.operators.empty import EmptyOperator
-from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.providers.standard.sensors.external_task import ExternalTaskSensor
 
 """
 Exercise 8: Cross-DAG dependencies: sensors

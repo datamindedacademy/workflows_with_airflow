@@ -1,16 +1,16 @@
 import datetime as dt
 from airflow import DAG
 from airflow.providers.standard.operators.empty import EmptyOperator
-from airflow.datasets import Dataset
+from airflow.sdk import Asset
 
 """
-Exercise 9: Cross-DAG dependencies: datasets
+Exercise 9: Cross-DAG dependencies: assets
 
 We've built another DAG to create a report every time our data is
-updated. Here we use a Dataset dependency instead of a sensor.
+updated. Here we use a Asset dependency instead of a sensor.
 
 You'll practice: event-driven, data-aware scheduling via
-`Dataset`/outlets -- a DAG that reacts to data becoming available, in
+`Asset`/outlets -- a DAG that reacts to data becoming available, in
 contrast to every earlier exercise's interval-based `schedule=`
 cron/preset.
 
@@ -18,9 +18,9 @@ However, the dependency is not working correctly. Do you see what's
 wrong?
 """
 
-data_ready = Dataset("s3://bucket_name/ingress/processed.csv")
+data_ready = Asset("s3://bucket_name/ingress/processed.csv")
 
-# Processing DAG - produces the dataset
+# Processing DAG - produces the asset
 processing_dag = DAG(
     dag_id="9_processing_pipeline",
     description="Processes and stores data",
@@ -32,10 +32,10 @@ processing_dag = DAG(
 
 with processing_dag:
     process = EmptyOperator(task_id="process_data")
-    done = EmptyOperator(task_id="done", outlets=[data_ready])  # The task updates the dataset
+    done = EmptyOperator(task_id="done", outlets=[data_ready])  # The task updates the asset
     process >> done
 
-# Reporting DAG - scheduled to run when the dataset is updated
+# Reporting DAG - scheduled to run when the asset is updated
 reporting_dag = DAG(
     dag_id="9_solution_reporting_pipeline",
     description="Generates and sends reports",
