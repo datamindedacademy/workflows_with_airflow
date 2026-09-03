@@ -1,0 +1,20 @@
+{
+  "name": "workflows-with-airflow-slides",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "slidev slides.md --open",
+    "build": "slidev build slides.md",
+    "export": "slidev export slides.md --output Workflows-with-Airflow.pdf",
+    "preview": "slidev theme-preview.md --open"
+  },
+  "dependencies": {
+    "@slidev/cli": "^52.19.1",
+    "@slidev/theme-default": "^0.25.0",
+    "slidev-theme-dataminded": "file:./theme"
+  },
+  "devDependencies": {
+    "@iconify-json/mdi": "^1.2.0",
+    "playwright-chromium": "^1.48.0"
+  }
+}

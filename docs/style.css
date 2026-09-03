@@ -1,0 +1,136 @@
+/* Slidev 0.50 parks the "go to slide" dialog off-screen (`-top-20`) when it is closed,
+   but its autocomplete list keeps rendering and hangs down over the slide as a list of
+   every slide title. Hide the list while the dialog is parked; pressing "g" still works. */
+#slidev-goto-dialog[class*="-top-20"] .autocomplete-list {
+  display: none;
+}
+
+/* Twelve agenda rows have to fit on one page; the theme's default row height fits five. */
+.dm-agenda-body ol > li {
+  padding: 2px 4px !important;
+  font-size: 13px !important;
+}
+.dm-agenda-body h1:first-child {
+  padding-bottom: 8px !important;
+  margin-bottom: 16px !important;
+}
+
+/* The recap list: UnoCSS's reset strips list markers, so put the numbers back. */
+.dm-recap ol { list-style: decimal; padding-left: 26px; font-size: 18px; }
+.dm-recap li { margin-bottom: 10px; padding-left: 4px; }
+.dm-recap ul { list-style: disc; padding-left: 22px; margin-top: 6px; }
+.dm-recap ul li { margin-bottom: 4px; font-size: 17px; }
+
+/* Simple hairline-bordered comparison table, used for operator/config comparisons. */
+.dm-table { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 16px; }
+.dm-table th, .dm-table td {
+  border-bottom: 1px solid rgba(84, 62, 220, 0.35);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+.dm-table th { color: var(--dm-connecting); font-weight: 700; }
+
+/* Cron mnemonic box: monospace grid with the five field columns called out. */
+.cron-box {
+  background: var(--dm-surface);
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* Exercise-pointer badge used inside statement layout to show the folder path. */
+.exercise-path {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  font-family: ui-monospace, monospace;
+  font-size: 16px;
+}
+
+/* Third DmCard accent color (competitors slide) beyond the component's built-in violet/navy. */
+.card-argo .dm-card-head {
+  background: var(--dm-magenta) !important;
+}
+
+/* DmColumns defaults to equal-width columns (flex: 1 1 0); these classes give a 2:1 ratio
+   for slides that need an uneven split, e.g. bullets next to a narrower code sample. */
+.col-w2 { flex: 2 1 0 !important; }
+.col-w1 { flex: 1 1 0 !important; }
+
+/* Shrinks column headers, code blocks, title, banner and bullets so a full side-by-side code
+   comparison plus a banner and bullets can all fit on one slide (PythonOperator vs. TaskFlow API). */
+.code-compare .dm-col-head { font-size: 13px !important; padding: 5px 10px !important; margin-bottom: 8px !important; }
+.code-compare .dm-col-body { font-size: 12px !important; }
+.code-compare pre.shiki { padding: 8px 12px !important; font-size: 11px !important; line-height: 1.3 !important; margin: 0 !important; }
+.tf-title {
+  font-size: 26px !important;
+  border-bottom: 1px solid rgba(8, 6, 53, 0.85);
+  padding-bottom: 8px !important;
+  margin-bottom: 4px !important;
+  width: 100%;
+  padding-right: 120px;
+  box-sizing: border-box;
+}
+.tf-banner { padding: 8px 14px !important; }
+.tf-banner .dm-banner-icon { width: 30px !important; height: 30px !important; font-size: 15px !important; }
+.tf-banner .dm-banner-title { font-size: 13px !important; }
+.tf-banner .dm-banner-text { font-size: 12px !important; line-height: 1.3 !important; }
+.tf-bullets { font-size: 12px !important; line-height: 1.3 !important; }
+.tf-bullets li { margin-bottom: 2px !important; }
+
+/* Exercise slides: one or two exercises side by side on a single statement slide, so a block of
+   back-to-back exercises doesn't become a run of near-identical slides. */
+.ex-grid {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  align-items: stretch;
+  margin-top: 28px;
+  text-align: left;
+}
+.ex-grid--single { justify-content: center; }
+.ex-grid--single .ex-item { max-width: 620px; text-align: center; }
+.ex-item {
+  flex: 1 1 0;
+  max-width: 420px;
+  padding: 20px 22px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  display: flex;
+  flex-direction: column;
+}
+.ex-name {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.ex-desc {
+  font-size: 15px;
+  line-height: 1.45;
+  opacity: 0.9;
+  flex: 1;
+}
+.ex-item .exercise-path { align-self: flex-start; font-size: 14px; }
+.ex-grid--single .ex-item .exercise-path { align-self: center; }
+
+/* Reference tables: keep inline code from outgrowing the surrounding cell text. */
+.dm-table td code { font-size: 14px; }
+
+/* The trigger-rule table is eight rows deep — tighten the rows so it clears the footer. */
+.dm-table--dense td { padding: 5px 10px; font-size: 14px; }
+
+/* Managed-Airflow slide: a product logo + name, laid out in a row per provider column. */
+.dm-logo-row { display: flex; gap: 56px; margin-top: 8px; justify-content: center; }
+.dm-logo-item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.dm-logo-item img { height: 64px; width: auto; max-width: 120px; object-fit: contain; }
+.dm-logo-item span { font-size: 14px; font-weight: 600; color: var(--dm-premium); }
+.dm-logo-item--wordmark img { height: 88px; }

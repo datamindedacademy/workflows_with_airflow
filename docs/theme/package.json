@@ -1,0 +1,13 @@
+{
+  "name": "slidev-theme-dataminded",
+  "version": "0.1.0",
+  "private": true,
+  "keywords": ["slidev-theme", "slidev", "dataminded"],
+  "engines": { "slidev": ">=0.50.0" },
+  "slidev": {
+    "colorSchema": "light",
+    "defaults": {
+      "transition": "slide-left"
+    }
+  }
+}

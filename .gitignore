@@ -151,6 +151,12 @@ cython_debug/
 *.ipynb
 logs/
 
-# airflow 
+# airflow
 mount/
 /mount
+
+# slidev deck (docs/)
+docs/node_modules/
+docs/.slidev/
+docs/dist/
+docs/*.pdf
