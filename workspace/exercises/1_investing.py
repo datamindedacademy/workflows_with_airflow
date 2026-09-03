@@ -55,7 +55,7 @@ def run_analysis(df):
 
 
 def store_results(df):
-    df.to_csv("./investment.csv")
+    df.to_csv("/opt/airflow/dags/investment.csv")
 
 
 with dag:

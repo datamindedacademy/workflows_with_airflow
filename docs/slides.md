@@ -14,12 +14,12 @@ subtitle: Orchestrating work with Apache Airflow · Data Minded Academy
 
 <p class="mt-6 text-lg opacity-80"><code>github.com/datamindedacademy/workflows_with_airflow</code></p>
 
----
+<!-- ---
 layout: default
 label: Intro
----
+--- -->
 
-# Who am <span class="dm-accent">I?</span>
+<!-- # Who am <span class="dm-accent">I?</span> -->
 
 <!--
 <DmColumns class="mt-6">
@@ -33,7 +33,7 @@ label: Intro
 </DmColumns>
 -->
 
-<DmColumns class="mt-6">
+<!-- <DmColumns class="mt-6">
 <DmColumn header="Jos Teunissen" tone="violet">
 
 - Data Engineer, Data Minded (since 2023)
@@ -41,7 +41,7 @@ label: Intro
 - Before that: UGent (Centre for Molecular Modelling), Royal Belgian Institute for Space Aeronomy, VUB, Rijksuniversiteit Groningen
 
 </DmColumn>
-</DmColumns>
+</DmColumns> -->
 
 ---
 layout: agenda
@@ -251,8 +251,8 @@ label: 1 · Orchestration
 
 # Example DAG in Airflow with 5 <span class="dm-accent">tasks</span>
 
-<div class="flex justify-center mt-6">
-<img src="/img/example-dag-5-tasks.png" alt="Example DAG graph with 5 tasks" style="height: 380px; object-fit: contain" />
+<div class="flex justify-center mt-10">
+<img src="/img/example-dag-5-tasks-ui.png" alt="Airflow graph view of a five-task DAG: make_choice fans out to create_report and send_most_recent_report, create_report fans out to foo and send_most_recent_report, and send_most_recent_report leads to signal_done" style="width: 100%; max-height: 300px; object-fit: contain" />
 </div>
 
 ---
@@ -572,7 +572,7 @@ label: 4 · Building a DAG
 
 # A workflow is defined by the DAG class and its <span class="dm-accent">operators</span>
 
-```python {all|1-6|8-12}
+```python
 with DAG(
     dag_id="reporting",
     schedule="@daily",
@@ -1159,7 +1159,7 @@ label: 7 · DAG design patterns
 
 # Task chaining <span class="dm-accent">shorthands</span>
 
-```python {all|1-3|5-7|9-11|13-15}
+```python
 # Simple chain
 a >> b >> c
 
@@ -1354,7 +1354,7 @@ label: 8 · Operators & trigger rules
 
 # An operator is a class — and you can read the <span class="dm-accent">source</span>
 
-```python {all|1-2|4-5|7-8}
+```python
 class BaseOperator(Operator, LoggingMixin, ...):
     """Abstract base class for all operators."""      # has an execute() method
 
@@ -1788,15 +1788,15 @@ dag = DAG(
 )
 ```
 
-<p class="mt-4">💡 Use department, team name, distribution group, or project/product name as tags.</p>
-
 </DmColumn>
 <DmColumn tone="plain" divider class="col-w1">
 
-<img src="/img/webui-tag-filter.png" alt="The DAGs list filtered by tag, with an autocomplete dropdown offering example2 and example3" style="width: 100%; object-fit: contain" />
+💡 Use department, team name, distribution group, or project/product name as tags.
 
 </DmColumn>
 </DmColumns>
+
+<img src="/img/webui-tag-filter.png" alt="The Airflow 3 DAGs list filtered on the example2 tag, showing the two matching DAGs with their schedule, latest run and tags" class="mt-4" style="width: 100%; object-fit: contain" />
 
 <DmBanner tone="violet" icon="i-mdi-filter-outline" class="mt-4">
 Filter the DAGs list by tag, then share the URL — the Airflow 3 UI keeps the filter in the query string.
@@ -1806,40 +1806,10 @@ Filter the DAGs list by tag, then share the URL — the Airflow 3 UI keeps the f
 Possible to filter on tags. Attach department name, team name. Can also be used to assign owners
 (when the owner column isn't used). Good for notifying teams of failing DAGs. Good for deprecating
 potentially unused DAGs.
--->
 
----
-layout: default
-label: 11 · Best practices
----
-
-# Documentation: simply add <span class="dm-accent">documentation</span>
-
-```python
-dag = DAG("tutorial", description="A simple tutorial DAG")
-dag.doc_md = __doc__          # any string will do — reusing the module docstring is smart
-
-task = EmptyOperator(task_id="task_id")
-task.doc_md = "#### Task Documentation\nAlso `doc`, `doc_rst`, `doc_json`, `doc_yaml`."
-```
-
-<DmColumns class="mt-4" :gap="16">
-<DmColumn header="Rendered on the DAG page" tone="navy">
-
-<img src="/img/webui-dag-doc.png" alt="The DAG page showing the rendered Tutorial Documentation block above the graph" style="height: 200px; width: 100%; object-fit: contain" />
-
-</DmColumn>
-<DmColumn header="Rendered on Task Instance Details" tone="violet" divider>
-
-<img src="/img/webui-task-doc.png" alt="A Task Instance Details page showing the rendered task documentation, including an image" style="height: 200px; width: 100%; object-fit: contain" />
-
-</DmColumn>
-</DmColumns>
-
-<!--
-__doc__ can immediately be assigned if the docstring is defined at the top of the file. Makes a
-DAG's purpose clear without reading the code. Also useful for managers to see a description in the
-Airflow dashboard.
+In the Airflow 3 UI the tag filter is the third dropdown above the DAG list and is multi-select: pick
+`example2` and only the two DAGs carrying it remain. Tags are also a column in the list view, so you
+can see at a glance which team owns what.
 -->
 
 ---
@@ -1851,7 +1821,7 @@ label: 11 · Best practices
 
 ```python
 dag = DAG("timezone aware DAG", description="This DAG observes daylight saving time.",
-          start_date=pendulum.datetime(2021, 1, 1, tz="Europe/Brussels"))
+          start_date=pendulum.datetime(2026, 1, 1, tz="Europe/Brussels"))
 ```
 
 <DmColumns class="mt-4" :gap="16">
