@@ -90,6 +90,7 @@
   color: #ffffff;
 }
 .slidev-layout.dm-dark .dm-accent { color: #b3a7f2; }
+.slidev-layout.dm-dark li::marker { color: #b3a7f2; }
 
 /* Full-bleed real background image, used by chrome layouts.
    It is absolutely positioned at z-index 0, so content wrappers must sit above it. */

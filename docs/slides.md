@@ -76,9 +76,9 @@ label: 1 · Orchestration
 
 # Why a scheduler? A workflow triggered at a <span class="dm-accent">definite time</span>
 
-```mermaid {scale: 0.75}
+```mermaid {scale: 0.65}
 flowchart LR
-    A[Scrape stock NAVs] --> B[Run technical analyses]
+    A[Scrape stock Net Asset Values] --> B[Run technical analyses]
     A --> C[Scrape related news]
     C --> D[Run sentiment analysis]
     B --> E[Create report]
@@ -90,6 +90,7 @@ flowchart LR
 
 ---
 layout: default
+background: stream-violet
 label: 1 · Orchestration
 ---
 
@@ -101,23 +102,17 @@ A workflow scheduler for batch jobs, originally built at Airbnb, now mostly main
 
 </div>
 
-<DmColumns class="mt-6" :gap="16">
-<DmColumn tone="plain">
+<div class="mt-6">
 
 - Open-source automation of batch workflows
 - Workflows are **Python code**, with its whole ecosystem available
 - Kept in version control, deployed through CI/CD
 - Extend it with your own operators, hooks and plugins
-
-</DmColumn>
-<DmColumn tone="plain" divider>
-
 - Ready-made operators for Spark, SQL, Kubernetes, the big clouds, …
 - A large community, so most problems are already answered somewhere
 - A UI that tells you what ran, what failed, and how long it took
 
-</DmColumn>
-</DmColumns>
+</div>
 
 ---
 layout: cards
@@ -169,8 +164,6 @@ layout: statement
 
 # How would you automate a sequence of <span class="dm-accent">tasks?</span>
 
-<p class="mt-6 text-lg opacity-90">Take a minute. What has to be true before a step may start?</p>
-
 ---
 layout: default
 label: 1 · Orchestration
@@ -178,7 +171,7 @@ label: 1 · Orchestration
 
 # Directed Acyclic Graphs allow <span class="dm-accent">ordering</span>
 
-<div class="flex justify-center mt-2">
+<div class="flex justify-center mt-2 dag-cycle-demo">
 
 ```mermaid {scale: 1}
 flowchart LR
@@ -186,11 +179,21 @@ flowchart LR
     1 --> 2
     3 --> 2
     3 --> 4
-    4 -. x .-> 3
-    linkStyle 4 stroke:#fc6b51,color:#fc6b51
+    4 -.->|"x"| 3
+    linkStyle 4 stroke:#fc6b51,color:#fc6b51,stroke-width:2px
 ```
 
 </div>
+
+<style>
+:global(.dag-cycle-demo .edgeLabel),
+:global(.dag-cycle-demo .edgeLabel rect),
+:global(.dag-cycle-demo .labelBkg) {
+  background-color: transparent !important;
+  fill: transparent !important;
+  opacity: 1 !important;
+}
+</style>
 
 <p class="mt-4 text-lg">Valid execution orders for this DAG, with edges meaning "before":</p>
 
@@ -1462,9 +1465,9 @@ layout: default
 label: 9 · Cross-DAG dependencies
 ---
 
-# SubDAGs are gone: use Trigger/Sensor <span class="dm-accent">combos</span>
+# Cross-DAG dependencies: use Trigger/Sensor
 
-<p class="mt-2">You cannot create a direct dependency between tasks in two different DAGs — a SubDAG used to paper over that, and is now removed. Mimic the dependency, in either direction:</p>
+<p class="mt-2">You cannot create a direct dependency between tasks in two different DAGs. Mimic the dependency, in either direction:</p>
 
 <DmColumns class="mt-4" :gap="16">
 <DmColumn header="Pull: ExternalTaskSensor" tone="navy">
@@ -1502,7 +1505,7 @@ With `wait_for_completion`, this task ends when the child does.
 </DmColumn>
 </DmColumns>
 
-<p class="mt-4">Both couple two DAGs by <b>schedule</b>. The third option — Assets — couples them by <b>data</b> instead, and is usually the better answer. Two slides on.</p>
+<p class="mt-4">Both couple two DAGs by <b>schedule</b>. The third option — Assets — couples them by <b>data</b> instead, and is usually the better answer.</p>
 
 <!--
 TaskSensor is a pull system (you're waiting for something to finish) — needs the external dag_id
@@ -1877,21 +1880,6 @@ layout: default
 label: 12 · Wrap-up
 ---
 
-# Capstone exercise: something more <span class="dm-accent">realistic</span>
-
-<DmProcess class="mt-8">
-<DmPhase label="File uploaded to S3" />
-<DmPhase label="Retrieve API key via SSM secrets backend" />
-<DmPhase label="Call the API with that key" />
-</DmProcess>
-
-<p class="text-lg" style="margin-top: 44px">Combines Connections, secrets backends, and everything else covered so far into one realistic pipeline.</p>
-
----
-layout: default
-label: 12 · Wrap-up
----
-
 # Three things to <span class="dm-accent">remember</span>
 
 <DmSteps class="mt-6">
@@ -1939,12 +1927,6 @@ label: 12 · Wrap-up
 </DmColumns>
 
 <p class="mt-6">Plus the operational half: hosting and executors, CI/CD, secrets, monitoring, lineage.</p>
-
-<div class="mt-4">
-
-**Further reading** — <a href="https://medium.com/datamindedbe/cross-dag-dependencies-in-apache-airflow-a-comprehensive-guide-88cbc0bc68d0">Cross-DAG dependencies in Apache Airflow: a comprehensive guide</a>, Frederic Vanderveken, Data Minded blog. Written pre-Airflow 3, so read it alongside the Assets slide.
-
-</div>
 
 ---
 layout: thanks
